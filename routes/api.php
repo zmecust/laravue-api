@@ -20,5 +20,5 @@ Route::group([
     'namespace' => 'Api',
 ], function() {
     Route::post('user/login', 'LoginController@login'); //登录认证
-    Route::get('user/register', 'RegisterController@register'); //注册
+    Route::post('user/register', 'RegisterController@register'); //注册
 });
