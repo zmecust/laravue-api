@@ -15,7 +15,7 @@ class RegisterController extends ApiController
      */
     public function register(Request $request)
     {
-        dd('test');
+        dd('test 3');
         $rules = [
             'name' => 'required|unique:users|between:4,12',
             'email' => 'required|email|unique:users',
