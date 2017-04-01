@@ -22,3 +22,5 @@ Route::get('/home', 'HomeController@index');
 Route::get('/email/verify/{confirm_code}', ['as' => 'email.verify', 'uses' => 'UsersController@verifyToken']);
 
 Route::resource('questions', 'QuestionsController');*/
+
+Route::post('/deploy', 'DeployController@deploy');
