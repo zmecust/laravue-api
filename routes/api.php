@@ -19,6 +19,6 @@ Route::group([
     'prefix' => 'v1',
     'namespace' => 'Api',
 ], function() {
-    Route::post('user/login', 'LoginController@login'); //登录认证
-    Route::get('user/register', 'RegisterController@register'); //注册
+    Route::post('user/login', 'UserController@login'); //登录认证
+    Route::post('user/register', 'UserController@register'); //注册
 });

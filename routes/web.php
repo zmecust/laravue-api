@@ -24,3 +24,4 @@ Route::get('/email/verify/{confirm_code}', ['as' => 'email.verify', 'uses' => 'U
 Route::resource('questions', 'QuestionsController');*/
 
 Route::post('/deploy', 'DeployController@deploy');
+Route::get('/email/verify/{confirm_code}', ['as' => 'email.verify', 'uses' => 'Api\UsersController@verifyToken']);
