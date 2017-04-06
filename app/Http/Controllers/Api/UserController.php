@@ -7,12 +7,21 @@ use Auth;
 use JWTAuth;
 use App\User;
 use Validator;
+use Carbon\Carbon;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Naux\Mail\SendCloudTemplate;
 
 class UserController extends ApiController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.auth', [
+            'only' => ['logout']
+        ]);
+    }
+
     /**
      * @param Request $request
      * @return mixed
@@ -22,11 +31,11 @@ class UserController extends ApiController
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:users|between:4,12',
             'email' => 'required|email|unique:users',
-            'password' => 'required|between:6,32|confirmed',
+            'password' => 'required|between:6,16|confirmed',
         ]);
 
         if ($validator->fails()) {
-            return $this->responseError('表单验证失败', $validator->errors()->toArray());
+            return $this->responseError(trans('validation.failed'), $validator->errors()->toArray());
         }
 
         $newUser = [
@@ -34,11 +43,13 @@ class UserController extends ApiController
             'name' => $request->get('name'),
             'avatar' => 'https://avatars.githubusercontent.com/u/19644407?v=3',
             'information_token' => str_random(40),
-            'password' => bcrypt($request->get('password')),
+            'password' => $request->get('password'),
         ];
 
         $user = User::create($newUser);
         $this->sendVerifyEmailTo($user);
+
+        return $this->responseSuccess(trans('register_success'));
     }
 
     private function sendVerifyEmailTo($user)
@@ -68,7 +79,68 @@ class UserController extends ApiController
         Auth::login($user);
         $token = JWTAuth::fromUser($user);
 
-        return $this->responseSuccess('verify email success', array_merge($user->toArray(), ['jwt_token' => $token]));
+        $user->jwt_token = [
+            'access_token' => $token,
+            'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
+        ];
+
+        return $this->responseSuccess('verify email success', $user->toArray());
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'login' => 'required',
+            'password' => 'required|between:6,16',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseError(trans('validation.failed'), $validator->errors()->toArray());
+        }
+
+        $field = filter_var($request->get('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        $credentials = array_merge([
+            $field => $request->get('login'),
+            'password' => $request->get('password'),
+            'is_active' => 1,
+        ]);
+
+        try {
+            // attempt to verify the credentials and create a token for the user
+            if (! $token = JWTAuth::attempt($credentials)) {
+                $user = User::where($field, $request->get('login'))->first();
+
+                if(is_null($user)!==true && $user->is_active == 0){
+                    return $this->responseError(trans('auth.has_not_verify_email'));
+                }
+
+                return $this->responseError(trans('auth.failed'));
+            }
+
+            $user = User::find(Auth::id());
+            // 设置JWT令牌
+            $user->jwt_token = [
+                'access_token' => $token,
+                'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
+            ];
+
+            return $this->responseSuccess('login success', $user->toArray());
+        } catch (JWTException $e) {
+            // something went wrong whilst attempting to encode the token
+            return $this->responseError(trans('jwt.could_not_create_token'));
+        }
+    }
+
+    public function logout()
+    {
+        try {
+            JWTAuth::parseToken()->invalidate();
+        } catch (TokenBlacklistedException $e) {
+            return $this->responseError(trans('jwt.the_token_has_been_blacklisted'));
+        } catch (JWTException $e) {
+            // 忽略该异常（Authorization为空时会发生）
+        }
+        return $this->responseSuccess('logout success');
     }
 
 }

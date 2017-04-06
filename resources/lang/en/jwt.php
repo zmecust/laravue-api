@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Language Lines
+    | JWT Language Lines
     |--------------------------------------------------------------------------
     |
     | The following language lines are used during authentication for various
@@ -13,8 +13,10 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'has_not_verify_email' => 'You must verify your email first.',
-    'register_success' => 'register success, and you must verify your email first.',
+    'token_not_provided' => 'Token not provided.',
+    'token_expired' => 'Token expired.',
+    'token_invalid' => 'Token invalid.',
+    'user_not_found' => 'User not found.',
+    'could_not_create_token' => 'Could not create token.',
+    'the_token_has_been_blacklisted' => 'The token has been blacklisted.',
 ];

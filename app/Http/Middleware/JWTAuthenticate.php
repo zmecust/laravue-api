@@ -53,7 +53,7 @@ class JWTAuthenticate extends BaseMiddleware
         $response = $this->events->fire($event, $payload, true);
 
         $result = [
-            'code'    => -1,
+            'status'    => 0,
             'message' => trans('jwt.' . $error),
         ];
         return $response ?: $this->response->json($result, $status);

@@ -26,10 +26,15 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'information_token'
     ];
 
-    public function sendPasswordResetNotification($token)
+    public function setPasswordAttribute($password)
+    {
+        return $this->attributes['password'] = \Hash::make($password);
+    }
+
+    /*public function sendPasswordResetNotification($token)
     {
         $data = ['url' => url('password/reset', $token)];
         $template = new SendCloudTemplate('resetPassword', $data);
@@ -38,5 +43,5 @@ class User extends Authenticatable
             $message->from('247281377@qq.com', 'ZMC社区');
             $message->to($this->email);
         });
-    }
+    }*/
 }

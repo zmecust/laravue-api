@@ -96,7 +96,7 @@ return [
     | specify a specific custom language line for a given attribute rule.
     |
     */
-
+    'failed' => 'validate failed',
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',

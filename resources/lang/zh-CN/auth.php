@@ -13,8 +13,8 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'has_not_verify_email' => 'You must verify your email first.',
-    'register_success' => 'register success, and you must verify your email first.',
+    'failed'   => '用户名或密码错误',
+    'throttle' => '您的尝试登录次数过多. 请 :seconds 秒后再试',
+    'has_not_verify_email' => '您还未激活该用户，请先前往邮箱激活',
+    'register_success' => '注册成功，请先前往邮箱激活账号',
 ];

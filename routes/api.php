@@ -21,4 +21,15 @@ Route::group([
 ], function() {
     Route::post('user/login', 'UserController@login'); //登录认证
     Route::post('user/register', 'UserController@register'); //注册
+    Route::resource('articles', 'QuestionsController'); //话题
+    Route::get('topics/all', 'TopicsController@show');
+});
+
+Route::group([
+    'middleware' => ['cors','jwt.auth'],
+    'prefix' => 'v1',
+    'namespace' => 'Api',
+], function() {
+    Route::any('user/logout', 'UserController@logout'); //退出
+    Route::post('article_image', 'Questions@changeArticleImage');
 });
