@@ -15,7 +15,7 @@
 });*/
 
 Route::group([
-    'middleware' => ['cors','api'],
+    'middleware' => ['Cors','api'],
     'prefix' => 'v1',
     'namespace' => 'Api',
 ], function() {
@@ -26,7 +26,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['cors','jwt.auth'],
+    'middleware' => ['Cors','jwt.auth'],
     'prefix' => 'v1',
     'namespace' => 'Api',
 ], function() {
