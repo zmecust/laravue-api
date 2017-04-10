@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Mail;
 use Auth;
+use Cache;
 use JWTAuth;
 use App\User;
 use Validator;
@@ -22,6 +23,34 @@ class UserController extends ApiController
         ]);
     }
 
+    public function getRegisterCode()
+    {
+        $emailCode = str_random(8);
+        $email = Request('email');
+
+        if(empty(Cache::get($email))) {
+            Cache::put($email, 0, 100);
+        }
+
+        if(Cache::get($email) <= 3) {
+            Cache::increment($email);
+
+            if(empty(Cache::get('emailCode'.$email))) {
+                Cache::put('emailCode'.$email, $emailCode, 5);
+
+                $this->sendVerifyEmailTo($emailCode, $email);
+
+                return $this->responseSuccess('发送注册码成功');
+
+            } else {
+                return $this->responseError('请五分钟后再试');
+            }
+
+        } else {
+            return $this->responseError('发送频繁，请一百分钟后再试');
+        }
+    }
+
     /**
      * @param Request $request
      * @return mixed
@@ -32,50 +61,25 @@ class UserController extends ApiController
             'name' => 'required|unique:users|between:4,12',
             'email' => 'required|email|unique:users',
             'password' => 'required|between:6,16|confirmed',
+            'code' => 'required',
         ]);
 
         if ($validator->fails()) {
             return $this->responseError(trans('validation.failed'), $validator->errors()->toArray());
         }
 
+        if ($this->validateEmailCode(Request('email'), Request('code'))) {
+            return $this->responseError('注册码验证失败');
+        }
+
         $newUser = [
             'email' => $request->get('email'),
             'name' => $request->get('name'),
             'avatar' => 'https://avatars.githubusercontent.com/u/19644407?v=3',
-            'information_token' => str_random(40),
             'password' => $request->get('password'),
         ];
 
         $user = User::create($newUser);
-        $this->sendVerifyEmailTo($user);
-
-        return $this->responseSuccess(trans('register_success'));
-    }
-
-    private function sendVerifyEmailTo($user)
-    {
-        $data = ['url' => route('email.verify', ['token' => $user->information_token]),
-            'name' => $user->name,
-        ];
-        $template = new SendCloudTemplate('laravue_verify', $data);
-
-        Mail::raw($template, function ($message) use ($user) {
-            $message->from('root@laravue.org', 'laravue.org');
-            $message->to($user->email);
-        });
-    }
-
-    public function verifyToken($confirm_code)
-    {
-        $user = User::where('information_token', $confirm_code)->first();
-
-        if (is_null($user)) {
-            return $this->responseError('verify email failed');
-        }
-
-        $user->is_active = 1;
-        $user->information_token = str_random(40);
-        $user->save();
         Auth::login($user);
         $token = JWTAuth::fromUser($user);
 
@@ -84,7 +88,28 @@ class UserController extends ApiController
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
 
-        return $this->responseSuccess('verify email success', $user->toArray());
+        return $this->responseSuccess(trans('register_success'), $user->toArray());
+    }
+
+    private function validateEmailCode($email, $code)
+    {
+        $emailCode = Cache::get('emailCode'.$email);
+
+        if($emailCode !== $code) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function sendVerifyEmailTo($emailCode, $email)
+    {
+        $template = new SendCloudTemplate('laravue_verify', ['code' => $emailCode]);
+
+        Mail::raw($template, function ($message) use ($email) {
+            $message->from('root@laravue.org', 'laravue.org');
+            $message->to($email);
+        });
     }
 
     public function login(Request $request)
@@ -102,7 +127,6 @@ class UserController extends ApiController
         $credentials = array_merge([
             $field => $request->get('login'),
             'password' => $request->get('password'),
-            'is_active' => 1,
         ]);
 
         try {
@@ -110,11 +134,9 @@ class UserController extends ApiController
             if (! $token = JWTAuth::attempt($credentials)) {
                 $user = User::where($field, $request->get('login'))->first();
 
-                if(is_null($user)!==true && $user->is_active == 0){
-                    return $this->responseError(trans('auth.has_not_verify_email'));
+                if(is_null($user)){
+                    return $this->responseError(trans('auth.failed'));
                 }
-
-                return $this->responseError(trans('auth.failed'));
             }
 
             $user = User::find(Auth::id());

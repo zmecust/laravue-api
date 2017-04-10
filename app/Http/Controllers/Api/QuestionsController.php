@@ -24,7 +24,14 @@ class QuestionsController extends ApiController
      */
     public function index()
     {
-        $questions = Question::with('user', 'topics')->get();
+        $questions = Question::with([
+            'user' => function ($query) {
+            $query->select('id','name','avatar');
+            },
+            'topics' => function ($query) {
+                $query->select('name');
+            },
+            ])->get();
         return $this->responseSuccess('查询成功', $questions->toArray());
     }
 
@@ -36,11 +43,11 @@ class QuestionsController extends ApiController
      */
     public function store(Request $request)
     {
-        //return $this->responseError($request->get('article_image'));
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:4|max:196',
             'tags' => 'required',
             'body' => 'required|min:10',
+            'article_image' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -51,7 +58,8 @@ class QuestionsController extends ApiController
             'title' => $request->get('title'),
             'body' => $request->get('body'),
             'user_id' => Auth::id(),
-            'close_comment' => $request->get('close_comment')
+            'close_comment' => $request->get('close_comment'),
+            'image_url' => $request->get('article_image')
         ];
 
         $question = Question::create($data);
@@ -85,7 +93,7 @@ class QuestionsController extends ApiController
         $filename = md5(time()).'.'.$file->getClientOriginalExtension();
         $file->move(public_path('articleImage'), $filename);
 
-        $article_image = 'http://115.28.170.217/articleImage/'.$filename;
+        $article_image = 'http://localhost/laravel_zhihu/public/articleImage/'.$filename;
 
         return ['url' => $article_image];
     }
@@ -98,7 +106,14 @@ class QuestionsController extends ApiController
      */
     public function show($id)
     {
-        $question = Question::where('id', $id)->with('user','topics')->get();
+        $question = Question::where('id', $id)->with([
+            'user' => function ($query) {
+                $query->select('id','name','avatar','created_at');
+            },
+            'topics' => function ($query) {
+                $query->select('name');
+            },
+        ])->get();
         return $this->responseSuccess('查询成功', $question->toArray());
     }
 
@@ -123,5 +138,14 @@ class QuestionsController extends ApiController
     public function destroy($id)
     {
         //
+    }
+    public function hotArticles()
+    {
+        $articles = Question::with([
+            'user' => function ($query) {
+                $query->select('id','avatar');
+            }])->latest()->get();
+
+        return $this->responseSuccess('查询成功', $articles->toArray());
     }
 }

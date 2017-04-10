@@ -19,8 +19,6 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('avatar');
             $table->string('password');
-            $table->string('information_token');
-            $table->smallInteger('is_active')->default(0);
             $table->integer('questions_count')->default(0);
             $table->integer('answers_count')->default(0);
             $table->integer('comments_count')->default(0);
