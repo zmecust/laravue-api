@@ -14,6 +14,7 @@
     return $request->user();
 });*/
 
+
 Route::group([
     'middleware' => ['cors','api'],
     'prefix' => 'v1',
