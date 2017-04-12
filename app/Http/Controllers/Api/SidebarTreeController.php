@@ -159,4 +159,25 @@ class SidebarTreeController extends Controller
             //$this->res[$child]=$child.$str.$this->getValue($child);
         }
     }
+
+    function generateTree(){
+        /*$items = array(
+            1 => array('id' => 1, 'pid' => 0, 'name' => '安徽省'),
+            2 => array('id' => 2, 'pid' => 0, 'name' => '浙江省'),
+            3 => array('id' => 3, 'pid' => 1, 'name' => '合肥市'),
+            4 => array('id' => 4, 'pid' => 3, 'name' => '长丰县'),
+            5 => array('id' => 5, 'pid' => 1, 'name' => '安庆市'),
+        );*/
+        $items = Role::where('name', request('role'))->first()->perms()->get()->toArray();
+        /*dd($items);*/
+        $tree = array();
+        foreach($items as $item){
+            if(isset($items[$item['parent_id']])){
+                $items[$item['parent_id']]['son'][] = &$items[$item['id']];
+            }else{
+                $tree[] = &$items[$item['id']];
+            }
+        }
+        dd($items);
+    }
 }
