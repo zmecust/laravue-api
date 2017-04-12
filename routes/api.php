@@ -14,8 +14,6 @@
     return $request->user();
 });*/
 
-
-
 Route::group([
     'middleware' => ['cors','api'],
     'prefix' => 'v1',
@@ -27,6 +25,7 @@ Route::group([
     Route::get('topics/all', 'TopicsController@show'); //获取分类标签
     Route::get('hot_articles', 'QuestionsController@hotArticles');
     Route::post('user/get_code', 'UserController@getRegisterCode'); //获取注册码
+    Route::post('backend', 'SidebarTreeController@getSidebarTree');
 });
 
 Route::group([

@@ -93,7 +93,7 @@ class QuestionsController extends ApiController
         $filename = md5(time()).'.'.$file->getClientOriginalExtension();
         $file->move(public_path('articleImage'), $filename);
 
-        $article_image = 'http://localhost/laravel_zhihu/public/articleImage/'.$filename;
+        $article_image = 'http://localhost/laravue-backend/public/articleImage/'.$filename;
 
         return ['url' => $article_image];
     }
@@ -139,6 +139,7 @@ class QuestionsController extends ApiController
     {
         //
     }
+
     public function hotArticles()
     {
         $articles = Question::with([

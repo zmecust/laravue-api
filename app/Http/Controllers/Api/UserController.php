@@ -88,7 +88,14 @@ class UserController extends ApiController
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
 
-        return $this->responseSuccess(trans('register_success'), $user->toArray());
+        $roles = $user->roles()->get();
+        $role = collect($roles)->map(function($role) {
+            return $role->name;
+        })->flatten(1)->toArray();
+
+        $data = array_merge($user->toArray(), ['role' => implode($role)]);
+
+        return $this->responseSuccess(trans('register_success'), $data);
     }
 
     private function validateEmailCode($email, $code)
@@ -146,7 +153,14 @@ class UserController extends ApiController
                 'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
             ];
 
-            return $this->responseSuccess('login success', $user->toArray());
+            $roles = $user->roles()->get();
+            $role = collect($roles)->map(function($role) {
+                return $role->name;
+            })->flatten(1)->toArray();
+
+            $data = array_merge($user->toArray(), ['role' => implode($role)]);
+
+            return $this->responseSuccess('login success', $data);
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
             return $this->responseError(trans('jwt.could_not_create_token'));
