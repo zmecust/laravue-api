@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Role;
 use App\Permission;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class SidebarTreeController extends Controller
+class SidebarTreeController extends ApiController
 {
     public function getSidebarTree()
     {
@@ -158,5 +156,61 @@ class SidebarTreeController extends Controller
             }
             //$this->res[$child]=$child.$str.$this->getValue($child);
         }
+    }
+
+    function generateTree()
+    {
+        /* 处理下标从1开始的数组
+         * $items = array(
+            1 => array('id' => 1, 'parent_id' => 0, 'name' => '安徽省'),
+            2 => array('id' => 2, 'parent_id' => 0, 'name' => '浙江省'),
+            3 => array('id' => 3, 'parent_id' => 1, 'name' => '合肥市'),
+            4 => array('id' => 4, 'parent_id' => 3, 'name' => '长丰县'),
+            5 => array('id' => 5, 'parent_id' => 1, 'name' => '安庆市'),
+        );
+
+        $tree = array();
+        foreach($items as $item){
+            if(isset($items[$item['parent_id']])){
+                $items[$item['parent_id']]['children'][] = &$items[$item['id']];
+            }else{
+                $tree[] = &$items[$item['id']];
+            }
+        }*/
+
+        $items = Permission::get()->toArray();
+
+        $tree = $this->getTree($items, 0, 'id', 'parent_id', 'children');
+
+        return $this->responseSuccess('OK', $tree);
+    }
+
+    public function getTree($data, $pid = 0, $key = 'id', $pKey = 'parentId', $childKey = 'child', $maxDepth = 0)
+    {
+        static $depth = 0;
+        $depth++;
+
+        if (intval($maxDepth) <= 0)
+        {
+            $maxDepth = count($data) * count($data);
+        }
+
+        if ($depth > $maxDepth)
+        {
+            exit("error recursion:max recursion depth {$maxDepth}");
+        }
+
+        $tree = array();
+
+        foreach ($data as $rk => $rv)
+        {
+            if ($rv[$pKey] == $pid)
+            {
+                $rv[$childKey] = $this->getTree($data, $rv[$key], $key, $pKey, $childKey, $maxDepth);
+                $tree[] = $rv;
+            }
+        }
+
+        return $tree;
     }
 }
