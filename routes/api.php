@@ -25,7 +25,7 @@ Route::group([
     Route::get('topics/all', 'TopicsController@show'); //获取分类标签
     Route::get('hot_articles', 'QuestionsController@hotArticles');
     Route::post('user/get_code', 'UserController@getRegisterCode'); //获取注册码
-    Route::get('backend', 'SidebarTreeController@generateTree');
+    Route::post('backend/permission_tree', 'SidebarTreeController@generateTree');
 });
 
 Route::group([
