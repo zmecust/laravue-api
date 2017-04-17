@@ -7,6 +7,7 @@ use Auth;
 use Cache;
 use JWTAuth;
 use App\User;
+use App\Role;
 use Validator;
 use Carbon\Carbon;
 use App\Http\Requests;
@@ -80,6 +81,7 @@ class UserController extends ApiController
         ];
 
         $user = User::create($newUser);
+        $user->attachRole(2);
         Auth::login($user);
         $token = JWTAuth::fromUser($user);
 
@@ -152,13 +154,16 @@ class UserController extends ApiController
                 'access_token' => $token,
                 'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
             ];
-
             $roles = $user->roles()->get();
             $role = collect($roles)->map(function($role) {
                 return $role->name;
             })->flatten(1)->toArray();
 
-            $data = array_merge($user->toArray(), ['role' => implode($role)]);
+            $items  = Role::where('name', implode($role))->first()->perms()->get();
+            $access_menu = $items->pluck('name')->toArray();
+            $menu = array_merge(['/backend'], $access_menu);
+
+            $data = array_merge($user->toArray(), ['role' => implode($role), 'access_menu' => $menu]);
 
             return $this->responseSuccess('login success', $data);
         } catch (JWTException $e) {
