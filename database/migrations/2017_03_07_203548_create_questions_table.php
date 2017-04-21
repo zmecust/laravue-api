@@ -17,6 +17,7 @@ class CreateQuestionsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('body');
+            $table->string('image_url')->nullable();  //话题封面图片
             $table->integer('user_id')->unsigned();
             $table->integer('comments_count')->default(0);
             $table->integer('followers_count')->default(1);

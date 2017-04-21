@@ -34,15 +34,4 @@ class User extends Authenticatable
     {
         return $this->attributes['password'] = \Hash::make($password);
     }
-
-    /*public function sendPasswordResetNotification($token)
-    {
-        $data = ['url' => url('password/reset', $token)];
-        $template = new SendCloudTemplate('resetPassword', $data);
-
-        Mail::raw($template, function ($message){
-            $message->from('247281377@qq.com', 'ZMC社区');
-            $message->to($this->email);
-        });
-    }*/
 }
