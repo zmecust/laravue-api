@@ -154,18 +154,8 @@ class UserController extends ApiController
                 'access_token' => $token,
                 'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
             ];
-            $roles = $user->roles()->get();
-            $role = collect($roles)->map(function($role) {
-                return $role->name;
-            })->flatten(1)->toArray();
 
-            $items  = Role::where('name', implode($role))->first()->perms()->get();
-            $access_menu = $items->pluck('name')->toArray();
-            $menu = array_merge(['/backend'], $access_menu);
-
-            $data = array_merge($user->toArray(), ['role' => implode($role), 'access_menu' => $menu]);
-
-            return $this->responseSuccess('login success', $data);
+            return $this->responseSuccess('login success', $user->toArray());
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
             return $this->responseError(trans('jwt.could_not_create_token'));

@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Mail;
-use Naux\Mail\SendCloudTemplate;
 use Illuminate\Notifications\Notifiable;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;

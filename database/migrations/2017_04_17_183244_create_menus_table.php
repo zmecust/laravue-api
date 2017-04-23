@@ -16,9 +16,10 @@ class CreateMenusTable extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_id');
-            $table->string('name')->unique();
+            $table->string('name')->unique()->comment('路由名');
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
+            $table->integer('order')->default(0)->comment('排序，asc');
             $table->timestamps();
         });
     }

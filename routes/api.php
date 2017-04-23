@@ -13,9 +13,13 @@
 /*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });*/
-
+/*
+|--------------------------------------------------------------------------
+| frontend
+|--------------------------------------------------------------------------
+*/
 Route::group([
-    'middleware' => ['cors','api'],
+    'middleware' => ['cors', 'api'],
     'prefix' => 'v1',
     'namespace' => 'Api',
 ], function() {
@@ -23,16 +27,30 @@ Route::group([
     Route::post('user/register', 'UserController@register'); //注册
     Route::resource('articles', 'QuestionsController'); //话题
     Route::get('topics/all', 'TopicsController@show'); //获取分类标签
-    Route::get('hot_articles', 'QuestionsController@hotArticles');
+    Route::get('hot_articles', 'QuestionsController@hotArticles'); //热门话题
     Route::post('user/get_code', 'UserController@getRegisterCode'); //获取注册码
-    Route::middleware(['role:Owner|Admin'])->post('backend/permission_tree', 'SidebarTreeController@generateTree');
 });
 
 Route::group([
-    'middleware' => ['cors','jwt.auth'],
+    'middleware' => ['cors', 'api', 'jwt.auth'],
     'prefix' => 'v1',
     'namespace' => 'Api',
 ], function() {
     Route::any('user/logout', 'UserController@logout'); //退出
-    Route::post('article_image', 'QuestionsController@changeArticleImage');
+    Route::post('article_image', 'QuestionsController@changeArticleImage'); //上传话题图片
+});
+
+/*
+|--------------------------------------------------------------------------
+| backend
+|--------------------------------------------------------------------------
+*/
+Route::group([
+    'middleware' => ['cors', 'api', 'jwt.auth', 'check.permission'],
+    'prefix' => 'v1/backend',
+    'namespace' => 'Backend',
+], function() {
+    Route::get('menu', 'MenusController@GetSidebarTree');
+    Route::resource('roles', 'RolesController');
+    Route::resource('users', 'UsersController');
 });
