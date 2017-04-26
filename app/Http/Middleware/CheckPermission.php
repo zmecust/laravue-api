@@ -3,8 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\Permission;
+use App\User;
 use Closure;
 use Route;
+use Cache;
 use Entrust;
 
 class CheckPermission
@@ -26,6 +28,11 @@ class CheckPermission
         if (empty($permission_info)) {
             return $next($request);
         }  //检查是否有权限
+
+        $data= explode(' ', $request->header('Authorization'))[1];
+        $user_id = Cache::get('CMS'.$data);
+
+        $role_id = User::where('user_id', $user_id);
 
         if (!Entrust::can(Entrust::can($uri_name))) {
 

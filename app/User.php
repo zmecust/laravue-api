@@ -10,6 +10,8 @@ class User extends Authenticatable
 {
     use Notifiable, EntrustUserTrait;
 
+    protected $table='role_user';
+
     /**
      * The attributes that are mass assignable.
      *

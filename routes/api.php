@@ -23,7 +23,7 @@ Route::group([
     'prefix' => 'v1',
     'namespace' => 'Api',
 ], function() {
-    Route::post('user/login', 'UserController@login'); //登录认证
+    //Route::post('user/login', 'UserController@login'); //登录认证
     Route::post('user/register', 'UserController@register'); //注册
     Route::resource('articles', 'QuestionsController'); //话题
     Route::get('topics/all', 'TopicsController@show'); //获取分类标签
@@ -53,4 +53,13 @@ Route::group([
     Route::get('menu', 'MenusController@GetSidebarTree');
     Route::resource('roles', 'RolesController');
     Route::resource('users', 'UsersController');
+    Route::resource('permissions', 'PermissionsController');
+});
+
+Route::group([
+    'middleware' => ['cors', 'api', 'check.permission'],
+    'prefix' => 'v1/backend',
+    'namespace' => 'Backend',
+], function() {
+    Route::post('login', 'LoginController@login');
 });
