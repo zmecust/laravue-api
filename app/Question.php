@@ -16,7 +16,7 @@ class Question extends Model
     }
 
     public function getTopicListAttribute(){
-        return $this->topics->lists('id')->all();
+        return $this->topics()->lists('id')->all();
     }
 
     public function user()

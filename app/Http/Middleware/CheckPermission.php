@@ -20,8 +20,7 @@ class CheckPermission
      */
     public function handle($request, Closure $next)
     {
-        $uri_name = Route::currentRouteName();
-
+        $uri_name = Route::currentRouteName(); //后端路由必须全部命名，否则此处为null
         $permission_info = Permission::where('name', $uri_name)->first();
         //如果查不到路由名对应的权限则直接放行
 
@@ -29,15 +28,15 @@ class CheckPermission
             return $next($request);
         }  //检查是否有权限
 
-        $data= explode(' ', $request->header('Authorization'))[1];
-        $user_id = Cache::get('CMS'.$data);
+        $access_token = $request->header('authorization');
+        $user_id = Cache::get('CMS'.$access_token);
+        $permissions = User::where('id', $user_id)->first()
+            ->roles()->first()
+            ->perms()->pluck('name')->toArray(); //获取当前用户所有权限名
 
-        $role_id = User::where('user_id', $user_id);
-
-        if (!Entrust::can(Entrust::can($uri_name))) {
-
+        if (!in_array($uri_name, $permissions)) {
             return response()->json([
-                'permission' => 0,
+                'status' => 0,
                 'message' => 'U have no permission',
                 'data' => null
             ]);
