@@ -15,25 +15,10 @@ class UsersController extends ApiController
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userRepository->getUserList();
+        $users = $this->userRepository->getUserList($request);
         return $this->responseSuccess('OK', $users->toArray());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -55,18 +40,8 @@ class UsersController extends ApiController
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $user = $this->userRepository->getUser($id);
+        return $this->responseSuccess('OK', $user->toArray());
     }
 
     /**
@@ -78,7 +53,8 @@ class UsersController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = $this->userRepository->updateUser($request, $id);
+        return $this->responseSuccess('OK', $user);
     }
 
     /**
@@ -89,6 +65,10 @@ class UsersController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        if ($this->userRepository->deleteUser($id)) {
+            return $this->responseSuccess('OK');
+        };
+
+        return $this->responseError('Error');
     }
 }

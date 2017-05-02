@@ -16,26 +16,16 @@ class PermissionsController extends ApiController
         $this->permissionRepository = $permissionRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->permissionRepository->getPermissionList();
-
-        return $this->responseSuccess('OK', $users->toArray());
+        $permissions = $this->permissionRepository->getPermissionList($request);
+        return $this->responseSuccess('OK', $permissions->toArray());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function groupPermissions()
     {
-        //
+        $group_permissions = $this->permissionRepository->groupPermissions();
+        return $this->responseSuccess('OK', $group_permissions);
     }
 
     /**
@@ -46,7 +36,11 @@ class PermissionsController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        /*if ($this->permissionRepository->createPermission($request)) {
+            return $this->responseSuccess('OK');
+        }*/
+        $permission = $this->permissionRepository->createPermission($request);
+        return $this->responseSuccess('OK', $permission);
     }
 
     /**
@@ -57,18 +51,8 @@ class PermissionsController extends ApiController
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $permission  = $this->permissionRepository->getPermission($id);
+        return $this->responseSuccess('OK', $permission);
     }
 
     /**
@@ -80,7 +64,8 @@ class PermissionsController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
+        $permission = $this->permissionRepository->updatePermission($request, $id);
+        return $this->responseSuccess('OK', $permission);
     }
 
     /**
@@ -91,6 +76,10 @@ class PermissionsController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        if ($this->permissionRepository->deletePermission($id)) {
+            return $this->responseSuccess('OK');
+        };
+
+        return $this->responseError('Error');
     }
 }

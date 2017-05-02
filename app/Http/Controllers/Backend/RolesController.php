@@ -22,25 +22,10 @@ class RolesController extends ApiController
         $this->roleRepository = $roleRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = $this->roleRepository->getRoleList();
+        $roles = $this->roleRepository->getRoleList($request);
         return $this->responseSuccess('OK', $roles->toArray());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -51,7 +36,8 @@ class RolesController extends ApiController
      */
     public function store(Request $request)
     {
-
+        $role = $this->roleRepository->createRole($request);
+        return $this->responseSuccess('OK', $role);
     }
 
     /**
@@ -62,18 +48,8 @@ class RolesController extends ApiController
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $role = $this->roleRepository->getRole($id);
+        return $this->responseSuccess('OK', $role);
     }
 
     /**
@@ -85,7 +61,8 @@ class RolesController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
+        $role = $this->roleRepository->updateRole($request, $id);
+        return $this->responseSuccess('OK', $role);
     }
 
     /**
@@ -96,6 +73,10 @@ class RolesController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        if ($this->roleRepository->deleteRole($id)) {
+            return $this->responseSuccess('OK');
+        };
+
+        return $this->responseError('Error');
     }
 }

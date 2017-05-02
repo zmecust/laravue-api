@@ -46,13 +46,17 @@ Route::group([
 |--------------------------------------------------------------------------
 */
 Route::group([
-    'middleware' => ['cors', 'api', 'jwt.auth', 'check.permission'],
+    'middleware' => ['cors', 'api', 'check.login', 'check.permission'],
     'prefix' => 'v1/backend',
     'namespace' => 'Backend',
 ], function() {
-    Route::get('menu', 'MenusController@GetSidebarTree');
+    Route::get('menu', 'MenusController@getSidebarTree')->name('user.menu');
+    Route::get('parent_menu', 'MenusController@getParentMenu');
+    Route::get('children_menu', 'MenusController@getChildrenMenu');
+    Route::get('group_permissions', 'PermissionsController@groupPermissions');
     Route::resource('roles', 'RolesController');
     Route::resource('users', 'UsersController');
+    Route::resource('menus', 'MenusController');
     Route::resource('permissions', 'PermissionsController');
 });
 

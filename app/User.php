@@ -10,15 +10,13 @@ class User extends Authenticatable
 {
     use Notifiable, EntrustUserTrait;
 
-    protected $table='role_user';
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'information_token', 'avatar'
+        'id'
     ];
 
     /**

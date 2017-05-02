@@ -6,5 +6,5 @@ use Zizaco\Entrust\EntrustPermission;
 
 class Permission extends EntrustPermission
 {
-
+    protected $fillable = ['name', 'uri', 'id', 'display_name'];
 }
