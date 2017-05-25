@@ -18,7 +18,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \Barryvdh\Cors\HandleCors::class,
     ];
 
     /**
@@ -63,6 +62,7 @@ class Kernel extends HttpKernel
         'permission' => \Zizaco\Entrust\Middleware\EntrustPermission::class,
         'ability' => \Zizaco\Entrust\Middleware\EntrustAbility::class,
         'check.permission' => \App\Http\Middleware\CheckPermission::class,
-        'check.login' => \App\Http\Middleware\CheckLogin::class
+        'check.login' => \App\Http\Middleware\CheckLogin::class,
+        'cors' => \Barryvdh\Cors\HandleCors::class,
     ];
 }
