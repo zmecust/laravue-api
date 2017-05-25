@@ -91,14 +91,14 @@ class UserController extends Controller
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
 
-        $roles = $user->roles()->get();
+        /*$roles = $user->roles()->get();
         $role = collect($roles)->map(function($role) {
             return $role->name;
         })->flatten(1)->toArray();
 
-        $data = array_merge($user->toArray(), ['role' => implode($role)]);
+        $data = array_merge($user->toArray(), ['role' => implode($role)]);*/
 
-        return $this->responseSuccess(trans('register_success'), $data);
+        return $this->responseSuccess(trans('register_success'), $user);
     }
 
     private function validateEmailCode($email, $code)
