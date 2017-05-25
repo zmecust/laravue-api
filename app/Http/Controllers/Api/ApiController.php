@@ -36,7 +36,7 @@ class ApiController extends Controller
      * @param array|NULL $data
      * @return \Illuminate\Http\JsonResponse
      */
-    public function responseError($message, array $data = NULL)
+    public function responseError($message, $data = NULL)
     {
         return $this->setStatus(0)->response($message, $data);
     }
@@ -46,7 +46,7 @@ class ApiController extends Controller
      * @param array|NULL $data
      * @return \Illuminate\Http\JsonResponse
      */
-    public function responseSuccess($message, array $data = NULL)
+    public function responseSuccess($message, $data = NULL)
     {
         return $this->response($message, $data);
     }
@@ -56,7 +56,7 @@ class ApiController extends Controller
      * @param array|NULL $data
      * @return \Illuminate\Http\JsonResponse
      */
-    public function response($message, array $data = NULL)
+    public function response($message, $data = NULL)
     {
         return response()->json([
             'status' => $this->getStatus(),
