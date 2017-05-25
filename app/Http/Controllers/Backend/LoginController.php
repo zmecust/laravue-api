@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Controller;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Cache;
 
-class LoginController extends ApiController
+class LoginController extends Controller
 {
     protected $client;
 

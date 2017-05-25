@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\ApiController;
 
-class RolesController extends ApiController
+class RolesController extends Controller
 {
     /**
      * @var RoleRepository

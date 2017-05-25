@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Topic;
 use Illuminate\Http\Request;
 
-class TopicsController extends ApiController
+class TopicsController extends Controller
 {
     public function show(Request $request) {
         $topics = Topic::select(['id', 'name'])->where('name', 'like', '%'.$request->query('q').'%')->get();

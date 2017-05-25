@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use Entrust;
 use Cache;
 use Validator;
 use Illuminate\Http\Request;
 use App\Repositories\MenuRepository;
-use App\Http\Controllers\Api\ApiController;
 
-class MenusController extends ApiController
+class MenusController extends Controller
 {
     /**
      * @var MenuRepository

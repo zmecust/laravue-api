@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Role;
 use App\Permission;
 
-class SidebarTreeController extends ApiController
+class SidebarTreeController extends Controller
 {
     public function getSidebarTree()
     {

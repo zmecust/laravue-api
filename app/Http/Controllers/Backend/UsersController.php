@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\ApiController;
 
-class UsersController extends ApiController
+class UsersController extends Controller
 {
     protected $userRepository;
 

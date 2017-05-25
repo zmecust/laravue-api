@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Api\ApiController;
 use App\Repositories\PermissionRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class PermissionsController extends ApiController
+class PermissionsController extends Controller
 {
     protected $permissionRepository;
 

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Auth;
 use Validator;
 use App\Topic;
 use App\Question;
 use Illuminate\Http\Request;
 
-class QuestionsController extends ApiController
+class QuestionsController extends Controller
 {
     public function __construct()
     {

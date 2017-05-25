@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Mail;
 use Auth;
 use Cache;
@@ -14,7 +15,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use Naux\Mail\SendCloudTemplate;
 
-class UserController extends ApiController
+class UserController extends Controller
 {
     public function __construct()
     {
