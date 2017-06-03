@@ -25,9 +25,9 @@ Route::group([
 ], function() {
     Route::post('user/login', 'UserController@login'); //登录认证
     Route::post('user/register', 'UserController@register'); //注册
-    Route::resource('articles', 'QuestionsController'); //话题
+    Route::resource('articles', 'ArticlesController'); //话题
     Route::get('topics/all', 'TopicsController@show'); //获取分类标签
-    Route::get('hot_articles', 'QuestionsController@hotArticles'); //热门话题
+    Route::get('hot_articles', 'ArticlesController@hotArticles'); //热门话题
     Route::post('user/get_code', 'UserController@getRegisterCode'); //获取注册码
 });
 
@@ -37,7 +37,7 @@ Route::group([
     'namespace' => 'Api',
 ], function() {
     Route::any('user/logout', 'UserController@logout'); //退出
-    Route::post('article_image', 'QuestionsController@changeArticleImage'); //上传话题图片
+    Route::post('article_image', 'ArticlesController@changeArticleImage'); //上传话题图片
 });
 
 /*

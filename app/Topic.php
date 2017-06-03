@@ -10,8 +10,8 @@ class Topic extends Model
         'name', 'bio', 'questions_count'
     ];
 
-    public function questions()
+    public function articles()
     {
-        return $this->belongsToMany(Question::class)->withTimestamps();
+        return $this->belongsToMany(Article::class)->withTimestamps();
     }
 }

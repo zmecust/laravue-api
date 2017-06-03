@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Mail;
 use Auth;
 use Cache;
@@ -14,6 +13,7 @@ use Carbon\Carbon;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Naux\Mail\SendCloudTemplate;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -82,7 +82,6 @@ class UserController extends Controller
         ];
 
         $user = User::create($newUser);
-        $user->attachRole(2);
         Auth::login($user);
         $token = JWTAuth::fromUser($user);
 
@@ -174,5 +173,4 @@ class UserController extends Controller
         }
         return $this->responseSuccess('logout success');
     }
-
 }

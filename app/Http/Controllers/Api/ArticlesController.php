@@ -2,39 +2,53 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Article;
 use App\Http\Controllers\Controller;
+use App\Repositories\ArticleRepository;
 use Auth;
+use Cache;
 use Validator;
 use App\Topic;
 use App\Question;
 use Illuminate\Http\Request;
 
-class QuestionsController extends Controller
+class ArticlesController extends Controller
 {
-    public function __construct()
+    protected $articleRepository;
+
+    public function __construct(ArticleRepository $articleRepository)
     {
         $this->middleware('jwt.auth', [
             'only' => ['store', 'update', 'destroy']
         ]);
+        $this->articleRepository = $articleRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $questions = Question::with([
-            'user' => function ($query) {
-            $query->select('id','name','avatar');
-            },
-            'topics' => function ($query) {
-                $query->select('name');
-            },
-            ])->get();
-        return $this->responseSuccess('查询成功', $questions->toArray());
+        $page = 1;
+        if ($request->input('page')) {
+            $page = $request->input('page');
+        }
+
+        $ids = Cache::tags('articles')->remember('articles'.$page, $minutes = 10, function () {
+            return Article::latest('updated_at')->pluck('id');
+        });
+
+
+        foreach ($ids as $id) {
+            // 一级缓存
+            yield $this->findById($id);
+        }
+
     }
+    public function findById($id)
+    {
+        return Cache::rememberForever("articles:{$id}", function () use ($id) {
+            return Article::where('id', $id)->with('user', 'topics')->get();
+        });
+    }
+
 
     /**
      * Store a newly created resource in storage.

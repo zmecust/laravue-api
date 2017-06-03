@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnToPermissionTable extends Migration
+class CreateArticlesTopicsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddColumnToPermissionTable extends Migration
      */
     public function up()
     {
-        Schema::table('permissions', function (Blueprint $table) {
-            $table->string('uri', 50)->after('description')->comment('路由名');
+        Schema::create('articles_topics', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('question_id')->unsigned()->index();
+            $table->integer('topic_id')->unsigned()->index();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddColumnToPermissionTable extends Migration
      */
     public function down()
     {
-        Schema::table('permissions', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('articles_topics');
     }
 }
