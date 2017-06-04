@@ -2,29 +2,32 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Auth;
 use Validator;
 use App\Topic;
-use App\Question;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Repositories\ArticleRepository;
 
-class QuestionsController extends Controller
+class ArticlesController extends Controller
 {
-    public function __construct()
+    protected $articleRepository;
+
+    public function __construct(ArticleRepository $articleRepository)
     {
         $this->middleware('jwt.auth', [
             'only' => ['store', 'update', 'destroy']
         ]);
+        $this->articleRepository = $articleRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
+        $page = 1;
+        if ($request->input('page')) {
+            $page = $request->input('page');
+        }
+
         $questions = Question::with([
             'user' => function ($query) {
             $query->select('id','name','avatar');

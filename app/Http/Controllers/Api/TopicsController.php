@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class TopicsController extends Controller
 {
-    public function show(Request $request) {
+    public function index(Request $request) {
         $topics = Topic::select(['id', 'name'])->where('name', 'like', '%'.$request->query('q').'%')->get();
         /*foreach ($topics as $topic) {
             $data = [

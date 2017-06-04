@@ -13,7 +13,7 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('articles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
             $table->string('body');
@@ -23,6 +23,7 @@ class CreateQuestionsTable extends Migration
             $table->integer('followers_count')->default(1);
             $table->string('close_comment',8)->default('F');
             $table->string('is_hidden',8)->default('F');
+            $table->timestamp('last_comment_time');
             $table->timestamps();
         });
     }
@@ -34,6 +35,6 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('articles');
     }
 }

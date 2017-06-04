@@ -82,7 +82,7 @@ class UserController extends Controller
         ];
 
         $user = User::create($newUser);
-        $user->attachRole(2);
+        /*$user->attachRole(2);*/
         Auth::login($user);
         $token = JWTAuth::fromUser($user);
 
