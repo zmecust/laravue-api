@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateQuestionsTable extends Migration
+class CreateArticlesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,12 +17,15 @@ class CreateQuestionsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('body');
-            $table->string('image_url')->nullable();  //话题封面图片
+            $table->string('image_url')->nullable()->comment('话题封面图片');
             $table->integer('user_id')->unsigned();
-            $table->integer('comments_count')->default(0);
-            $table->integer('followers_count')->default(1);
-            $table->string('close_comment',8)->default('F');
-            $table->string('is_hidden',8)->default('F');
+            $table->integer('category_id')->unsigned()->default(0)->index();
+            $table->integer('view_count')->unsigned()->default(0)->index();
+            $table->integer('comments_count')->unsigned()->default(0);
+            $table->integer('followers_count')->unsigned()->default(1);
+            $table->enum('close_comment', ['T', 'F'])->default('F')->index();
+            $table->enum('is_hidden', ['T', 'F'])->default('F')->index();
+            $table->enum('is_excellent', ['T', 'F'])->default('F')->index();
             $table->timestamp('last_comment_time');
             $table->timestamps();
         });

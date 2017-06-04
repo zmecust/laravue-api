@@ -7,14 +7,16 @@
  */
 namespace App\Repositories;
 
+use Cache;
 use App\Article;
 
 class ArticleRepository
 {
     public function latestArticle($page)
     {
-        $articles = Cache::tags('articles')->remember('articles'.$page, $minutes = 10, function() {
+        return Cache::tags('articles')->remember('articles'.$page, $minutes = 10, function() {
             return Article::with('user','topics')->latest('last_comment_time')->paginate(30);
         });
     }
+
 }

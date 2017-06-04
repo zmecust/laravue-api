@@ -33,7 +33,7 @@ Route::group([
     'prefix' => 'v1',
     'namespace' => 'Api',
 ], function() {
-    Route::any('user/logout', 'UserController@logout'); //退出
+    Route::get('user/logout', 'UserController@logout'); //退出
     Route::post('article_image', 'QuestionsController@changeArticleImage'); //上传话题图片
 });
 

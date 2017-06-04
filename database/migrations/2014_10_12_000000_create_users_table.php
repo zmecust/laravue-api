@@ -19,13 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('avatar');
             $table->string('password');
-            $table->integer('questions_count')->default(0);
-            $table->integer('answers_count')->default(0);
+            $table->integer('articles_count')->default(0);
             $table->integer('comments_count')->default(0);
             $table->integer('likes_count')->default(0);
             $table->integer('followers_count')->default(0);
             $table->integer('followings_count')->default(0);
-            $table->json('settings')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

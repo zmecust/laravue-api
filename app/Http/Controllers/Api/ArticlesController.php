@@ -28,15 +28,9 @@ class ArticlesController extends Controller
             $page = $request->input('page');
         }
 
-        $questions = Question::with([
-            'user' => function ($query) {
-            $query->select('id','name','avatar');
-            },
-            'topics' => function ($query) {
-                $query->select('name');
-            },
-            ])->get();
-        return $this->responseSuccess('查询成功', $questions->toArray());
+        $articles = $this->articleRepository->latestArticle($page);
+
+        return $this->responseSuccess('查询成功', $articles);
     }
 
     /**
@@ -48,10 +42,9 @@ class ArticlesController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|min:4|max:196',
-            'tags' => 'required',
+            'title' => 'required|between:4,196',
+            'topics' => 'required',
             'body' => 'required|min:10',
-            'article_image' => 'required'
         ]);
 
         if ($validator->fails()) {
