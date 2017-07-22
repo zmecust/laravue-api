@@ -1,0 +1,48 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "laravue.org RESTful API",
+    "description": ">>「laravue.org」是希望成为一款基于 Laravel & Vue 的技术内容聚合阅读应用，我们会根据你的技能帮你进行筛选，让你在这个信息过载的时代里更高效地获取你所需的内容。\n\n请求响应示例：\n```json\n{\n    \"status\": 1, //1代表成功，0代表失败\n    \"message\": \"...\",\n    \"data\": [\n        {\n            \"key\": key,\n            \"value\": \"value\",\n        }\n        ...\n    ]\n}\n```\n\n- Authentication\n- Pagination\n- Rate Limiting\n  ```\n  Retry-After: 30\n  X-RateLimit-Limit: 60\n  X-RateLimit-Remaining: 0\n  ```\n- User Agent Required\n\n- Email\n  - root@laravue.org\n"
+  },
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+
+  "paths": {
+    "/account/logout": {
+      "post": {
+        "tags": [
+          "account"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "code": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "error payload",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}

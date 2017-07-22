@@ -8,7 +8,7 @@ class DeployController extends Controller
 {
     public function deploy(Request $request)
     {
-        $commands = ['cd /var/www/html/laravue_backend', 'git pull'];
+        $commands = ['cd /var/www/html/laravue-backend', 'git pull'];
         $signature = $request->header('X-Hub-Signature');
         $payload = file_get_contents('php://input');
         if ($this->isFromGithub($payload, $signature)) {

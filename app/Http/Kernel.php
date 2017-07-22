@@ -58,11 +58,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'jwt.auth' => \App\Http\Middleware\JWTAuthenticate::class,
         'jwt.refresh' => \App\Http\Middleware\JWTRefreshToken::class,
-        'role' => \Zizaco\Entrust\Middleware\EntrustRole::class,
-        'permission' => \Zizaco\Entrust\Middleware\EntrustPermission::class,
-        'ability' => \Zizaco\Entrust\Middleware\EntrustAbility::class,
-        'check.permission' => \App\Http\Middleware\CheckPermission::class,
-        'check.login' => \App\Http\Middleware\CheckLogin::class,
         'cors' => \Barryvdh\Cors\HandleCors::class,
     ];
 }

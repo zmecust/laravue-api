@@ -2,21 +2,15 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Article extends Model
+class Article extends BaseModel
 {
     protected $fillable = [
-        'title', 'body', 'user_id', 'image_url', 'close_comment'
+        'title', 'body', 'user_id'
     ];
 
-    public function topics()
+    public function tags()
     {
-        return $this->belongsToMany(Topic::class)->withTimestamps();
-    }
-
-    public function getTopicListAttribute(){
-        return $this->topics()->lists('id')->all();
+        return $this->belongsToMany(Tag::class)->withTimestamps();
     }
 
     public function user()
@@ -24,8 +18,14 @@ class Article extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function isHidden()
+    //帖子没有被隐藏
+    public function scopeNotHidden($query)
     {
-        return $this->is_hidden === 'T';
+        return $query->where('is_hidden', 'F');
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }
