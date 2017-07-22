@@ -5,20 +5,18 @@
  * Date: 2017/7/13
  * Time: 17:48
  */
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use Mail;
 use Auth;
 use Cache;
 use JWTAuth;
 use App\User;
-use App\Role;
 use Validator;
 use Carbon\Carbon;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Naux\Mail\SendCloudTemplate;
-use App\Http\Controllers\Controller;
 use Overtrue\Socialite\SocialiteManager;
 
 class AuthController extends Controller
