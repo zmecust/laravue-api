@@ -86,6 +86,6 @@ return [
     |
     */
 
-    'prefix' => 'forum',
+    'prefix' => 'laravue',
 
 ];
