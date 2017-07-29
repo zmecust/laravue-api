@@ -195,7 +195,7 @@ class AuthController extends Controller
 
         if (in_array($githubUser->getNickname(), $user_names)) {
             $user = User::where('name', $githubUser->getNickname())->first();
-            Auth::login($user->id);
+            Auth::login($user);
         } else {
             $user = User::create([
                 'name' => $githubUser->getNickname(),
