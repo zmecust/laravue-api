@@ -18,10 +18,11 @@ class CreateArticlesTable extends Migration
             $table->string('title');
             $table->string('body');
             $table->integer('user_id')->unsigned();
-            $table->integer('last_comment_user_id')->unsigned()->default(0)->index()->comment('最后评论时间');
+            $table->integer('last_comment_user_id')->unsigned()->default(0)->index()->comment('最后评论用户id');
             $table->integer('category_id')->unsigned()->default(0)->index()->comment('所属类别');
             $table->integer('view_count')->unsigned()->default(0)->index()->comment('观看数');
             $table->integer('comments_count')->unsigned()->default(0)->comment('评论数');
+            $table->integer('likes_count')->unsigned()->default(0)->comment('点赞数');
             $table->enum('close_comment', ['T', 'F'])->default('F')->index()->comment('是否关闭评论');
             $table->enum('is_hidden', ['T', 'F'])->default('F')->index()->comment('是否隐藏');
             $table->enum('is_excellent', ['T', 'F'])->default('F')->index()->comment('是否为精华');

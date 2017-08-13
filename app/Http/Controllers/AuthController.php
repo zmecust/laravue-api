@@ -9,7 +9,6 @@ namespace App\Http\Controllers;
 
 use Mail;
 use Auth;
-use Cache;
 use JWTAuth;
 use App\User;
 use Validator;
@@ -29,35 +28,6 @@ class AuthController extends Controller
         ]);
     }
 
-    //获取注册验证码
-    public function getRegisterCode()
-    {
-        $emailCode = str_random(8);
-        $email = Request('email');
-
-        if(empty(Cache::get($email))) {
-            Cache::put($email, 0, 60);
-        }
-
-        if(Cache::get($email) <= 3) {  //60分钟内只能发送三次
-            Cache::increment($email);
-
-            if(empty(Cache::get('emailCode'.$email))) {
-                Cache::put('emailCode'.$email, $emailCode, 3); //验证码有效期3分钟
-
-                $this->sendVerifyEmailTo($emailCode, $email);
-
-                return $this->responseSuccess('发送注册码成功');
-
-            } else {
-                return $this->responseError('请三分钟后再试'); //验证码还在有效期内
-            }
-
-        } else {
-            return $this->responseError('验证码发送频繁，请稍后再试');
-        }
-    }
-
     /**
      * @param Request $request
      * @return mixed
@@ -68,15 +38,10 @@ class AuthController extends Controller
             'name' => 'required|unique:users|between:4,12',
             'email' => 'required|email|unique:users',
             'password' => 'required|between:6,16|confirmed',
-            'code' => 'required|size:8',
         ]);
 
         if ($validator->fails()) {
             return $this->responseError('表单验证失败', $validator->errors()->toArray());
-        }
-
-        if ($this->validateEmailCode(Request('email'), Request('code'))) {
-            return $this->responseError('注册码验证失败');
         }
 
         $newUser = [
@@ -84,47 +49,52 @@ class AuthController extends Controller
             'name' => $request->get('name'),
             'avatar' => public_path('/image/avatar.jpeg'),
             'password' => $request->get('password'),
+            'confirm_code' => str_random(60),
         ];
 
         $user = User::create($newUser);
-        $user->attachRole(2);
+        $this->sendVerifyEmailTo($user);
+        $user->attachRole(3);
         Auth::login($user);
-        $token = JWTAuth::fromUser($user);
 
+        $token = JWTAuth::fromUser($user);
         $user->jwt_token = [
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
 
-        /*$roles = $user->roles()->get();
-        $role = collect($roles)->map(function($role) {
-            return $role->name;
-        })->flatten(1)->toArray();
-
-        $data = array_merge($user->toArray(), ['role' => implode($role)]);*/
-
         return $this->responseSuccess('注册成功', $user);
     }
 
-    private function validateEmailCode($email, $code)
+    private function sendVerifyEmailTo($user)
     {
-        $emailCode = Cache::get('emailCode'.$email);
+        $data = [ 'url' => 'https://laravue.org/verify_email/' . $user->confirm_code,
+                  'name' => $user->name ];
+        $template = new SendCloudTemplate('laravue_verify', $data);
 
-        if($emailCode !== $code) {
-            return true;
-        }
-
-        return false;
+        Mail::raw($template, function ($message) use ($user) {
+            $message->from('root@laravue.org', 'laravue.org');
+            $message->to($user->email);
+        });
     }
 
-    private function sendVerifyEmailTo($emailCode, $email)
+    public function verifyToken()
     {
-        $template = new SendCloudTemplate('laravue_verify', ['code' => $emailCode]);
+        $user = User::where('confirm_code', Request('verify_code'))->first();
+        if (is_null($user)) {
+            $this->responseError('激活失败');
+        }
+        $user->is_confirmed = 1;
+        $user->confirm_code = str_random(40);
+        $user->save();
+        Auth::login($user);
 
-        Mail::raw($template, function ($message) use ($email) {
-            $message->from('root@laravue.org', 'laravue.org');
-            $message->to($email);
-        });
+        $token = JWTAuth::fromUser($user);
+        $user->jwt_token = [
+            'access_token' => $token,
+            'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
+        ];
+        return $this->responseSuccess('注册成功', $user);
     }
 
     public function login(Request $request)
@@ -153,14 +123,12 @@ class AuthController extends Controller
                     return $this->responseError('用户名或密码错误');
                 }
             }
-
             $user = User::find(Auth::id());
             // 设置JWT令牌
             $user->jwt_token = [
                 'access_token' => $token,
                 'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
             ];
-
             return $this->responseSuccess('登录成功', $user->toArray());
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
@@ -208,12 +176,10 @@ class AuthController extends Controller
         }
 
         $token = JWTAuth::fromUser($user);
-
         $user->jwt_token = [
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
-
         return $this->responseSuccess('登录成功', $user);
     }
 }

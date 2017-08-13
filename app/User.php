@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar'
+        'name', 'email', 'password', 'avatar', 'confirm_code'
     ];
 
     /**
@@ -31,5 +31,22 @@ class User extends Authenticatable
     public function setPasswordAttribute($password)
     {
         return $this->attributes['password'] = \Hash::make($password);
+    }
+
+    public function likes()
+    {
+        return $this->belongsToMany(Article::class, 'likes')->withTimestamps();
+    }
+
+    //用户点赞一个话题
+    public function likeThis($article)
+    {
+        return $this->likes()->toggle($article);
+    }
+
+    //用户是否点赞了这个话题
+    public function hasLikedThis($article)
+    {
+        return $this->likes()->where('article_id', $article)->count();
     }
 }

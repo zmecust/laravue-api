@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Article;
+use Cache;
+use Auth;
+use Validator;
 use App\Repositories\ArticleRepository;
 use Illuminate\Http\Request;
 
@@ -12,6 +16,9 @@ class ArticlesController extends Controller
     public function __construct(ArticleRepository $articleRepository)
     {
         $this->articleRepository = $articleRepository;
+        $this->middleware('jwt.auth', [
+            'only' => ['store', 'update', 'destroy']
+        ]);
     }
 
     public function index(Request $request)
@@ -49,7 +56,29 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|between:4,100',
+            'body' => 'required|min:10',
+            'tag' => 'required',
+            'is_hidden' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseError('表单验证失败', $validator->errors()->toArray());
+        }
+
+        $tags = $this->articleRepository->normalizeTopics($request->get('tag'));
+        $data = [
+            'title' => $request->get('title'),
+            'body' => $request->get('body'),
+            'user_id' => Auth::id(),
+            'is_hidden' => $request->get('is_hidden'),
+        ];
+        $article = $this->articleRepository->create($data);
+        Auth::user()->increment('articles_count');
+        $article->tags()->attach($tags);
+        Cache::tags('articles')->flush();
+        return $this->responseSuccess('OK', $article);
     }
 
     /**
@@ -101,5 +130,14 @@ class ArticlesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function hotArticles()
+    {
+        if (empty($hotArticles = Cache::get('hotArticles_cache'))) {
+            $hotArticles = Article::where([])->orderBy('comments_count', 'desc')->take(10)->get();
+            Cache::put('hotArticles_cache', $hotArticles, 10);
+        }
+        return $this->responseSuccess('查询成功', $hotArticles);
     }
 }
