@@ -29,4 +29,7 @@ Route::group([
     Route::get('hot_tags', 'TagsController@hotTags'); //获取分类标签
     Route::get('article/is_like','LikesController@isLike');//用户是否点赞了一个话题
     Route::get('article/like','LikesController@likeThisArticle');//用户点赞一个话题
+
+    //用户相关
+    Route::resource('users', 'UsersController');
 });
