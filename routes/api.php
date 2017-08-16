@@ -32,4 +32,6 @@ Route::group([
 
     //用户相关
     Route::resource('users', 'UsersController');
+    Route::get('users/{user}/articles', 'UsersController@userArticles');
+    Route::get('users/{user}/replies', 'UsersController@userReplies');
 });

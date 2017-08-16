@@ -118,7 +118,28 @@ class ArticlesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|between:4,100',
+            'body' => 'required|min:10',
+            'tag' => 'required',
+            'is_hidden' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            return $this->responseError('表单验证失败', $validator->errors()->toArray());
+        }
+
+        $tags = $this->articleRepository->normalizeTopics($request->get('tag'));
+        $data = [
+            'title' => $request->get('title'),
+            'body' => $request->get('body'),
+            'is_hidden' => $request->get('is_hidden'),
+        ];
+        $article = $this->articleRepository->byId($id);
+        $article->update($data);
+        $article->tags()->sync($tags);
+        Cache::tags('articles')->flush();
+        return $this->responseSuccess('OK', $article);
     }
 
     /**
