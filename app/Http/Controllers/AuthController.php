@@ -68,7 +68,7 @@ class AuthController extends Controller
 
     private function sendVerifyEmailTo($user)
     {
-        $data = [ 'url' => 'https://laravue.org/verify_email/' . $user->confirm_code,
+        $data = [ 'url' => 'https://laravue.org/#/verify_email/' . $user->confirm_code,
                   'name' => $user->name ];
         $template = new SendCloudTemplate('laravue_verify', $data);
 
@@ -80,8 +80,8 @@ class AuthController extends Controller
 
     public function verifyToken()
     {
-        $user = User::where('confirm_code', Request('verify_code'))->first();
-        if (is_null($user)) {
+        $user = User::where('confirm_code', Request('code'))->first();
+        if (empty($user)) {
             return $this->responseError('激活失败');
         }
         $user->is_confirmed = 1;
