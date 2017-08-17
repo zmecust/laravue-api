@@ -55,7 +55,7 @@ class AuthController extends Controller
         $user = User::create($newUser);
         $this->sendVerifyEmailTo($user);
         $user->attachRole(3);
-        Auth::login($user);
+        /*Auth::login($user);*/
 
         /*$token = JWTAuth::fromUser($user);
         $user->jwt_token = [
@@ -82,7 +82,7 @@ class AuthController extends Controller
     {
         $user = User::where('confirm_code', Request('verify_code'))->first();
         if (is_null($user)) {
-            $this->responseError('激活失败');
+            return $this->responseError('激活失败');
         }
         $user->is_confirmed = 1;
         $user->confirm_code = str_random(40);
