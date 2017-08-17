@@ -24,6 +24,7 @@ Route::group([
 
     //文章分类
     Route::resource('articles', 'ArticlesController'); //文章
+    Route::post('content_image', 'ArticlesController@contentImage');
     Route::get('hot_articles', 'ArticlesController@hotArticles'); //获取热门话题
     Route::resource('tags', 'TagsController');
     Route::get('hot_tags', 'TagsController@hotTags'); //获取分类标签

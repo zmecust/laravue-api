@@ -161,4 +161,15 @@ class ArticlesController extends Controller
         }
         return $this->responseSuccess('查询成功', $hotArticles);
     }
+
+    function contentImage(Request $request)
+    {
+        return $this->responseSuccess('查询成功', $request->all());
+        $file = $request->get('img');
+        $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('articleImage'), $filename);
+        $article_image = env('APP_URL') . '/articleImage/'.$filename;
+        return $this->responseSuccess('查询成功', ['url' => $article_image]);
+    }
+
 }
