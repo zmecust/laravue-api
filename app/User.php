@@ -49,4 +49,29 @@ class User extends Authenticatable
     {
         return $this->likes()->where('article_id', $article)->count();
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function followers() // 关注其他人
+    {
+        return $this->belongsToMany(self::class, 'followers', 'follower_id', 'followed_id')->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function followersUser() // 被其他人关注
+    {
+        return $this->belongsToMany(self::class, 'followers', 'followed_id', 'follower_id')->withTimestamps();
+    }
+
+    /**
+     * @param $user
+     * @return array
+     */
+    public function followThisUser($user)
+    {
+        return $this->followers()->toggle($user);
+    }
 }
