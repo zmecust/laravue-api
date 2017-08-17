@@ -29,6 +29,8 @@ Route::group([
     Route::get('hot_tags', 'TagsController@hotTags'); //获取分类标签
     Route::get('article/is_like','LikesController@isLike');//用户是否点赞了一个话题
     Route::get('article/like','LikesController@likeThisArticle');//用户点赞一个话题
+    Route::get('user/is_follow','FollowsController@isFollow');//用户是否关注一个用户
+    Route::get('user/follow','FollowsController@followThisUser');//用户关注一个用户
 
     //用户相关
     Route::resource('users', 'UsersController');

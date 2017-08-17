@@ -29,7 +29,7 @@ class ArticlesController extends Controller
             $page = $request->input('page');
         }
 
-        $articles = $this->articleRepository->getArticles($page);
+        $articles = $this->articleRepository->getArticles($page, $request);
 
         if (! empty($articles)) {
             return $this->responseSuccess('OK', $articles);

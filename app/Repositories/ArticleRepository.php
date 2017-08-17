@@ -13,12 +13,19 @@ use App\Article;
 
 class ArticleRepository
 {
-    public function getArticles($page)
+    public function getArticles($page, $request)
     {
-        return Cache::tags('articles')->remember('articles' . $page, $minutes = 10, function() {
-            return Article::notHidden()->with('user', 'tags')
-                ->latest('last_comment_time')->paginate(30);
-        });
+        if (empty($request->tag)) {
+            return Cache::tags('articles')->remember('articles' . $page, $minutes = 10, function() {
+                return Article::notHidden()->with('user', 'tags')->latest('last_comment_time')->paginate(30);
+            });
+        } else {
+            return Cache::tags('articles')->remember('articles' . $page . $request->tag, $minutes = 10, function() use ($request) {
+                return Article::notHidden()->whereHas('tags', function ($query) use ($request) {
+                    $query->where('name', $request->tag);
+                })->with('user', 'tags')->latest('last_comment_time')->paginate(30);
+            });
+        }
     }
 
     public function getArticle($id)

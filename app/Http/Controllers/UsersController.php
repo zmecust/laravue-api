@@ -36,4 +36,13 @@ class UsersController extends Controller
         }
         return $this->responseSuccess('查询成功', $comments);
     }
+
+    public function userLikesArticles($id)
+    {
+        if (empty($articles = Cache::get('user_likes_articles' . $id))) {
+            $articles = Comment::where('user_id', $id)->with('article')->latest('created_at')->get();
+            Cache::put('user_likes_articles' . $id, $articles, 10);
+        }
+        return $this->responseSuccess('查询成功', $articles);
+    }
 }
