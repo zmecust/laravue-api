@@ -55,13 +55,6 @@ class AuthController extends Controller
         $user = User::create($newUser);
         $this->sendVerifyEmailTo($user);
         $user->attachRole(3);
-        /*Auth::login($user);*/
-
-        /*$token = JWTAuth::fromUser($user);
-        $user->jwt_token = [
-            'access_token' => $token,
-            'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
-        ];*/
 
         return $this->responseSuccess('感谢您支持LaraVue社区，请前往邮箱激活该用户');
     }
@@ -85,7 +78,7 @@ class AuthController extends Controller
             return $this->responseError('激活失败');
         }
         $user->is_confirmed = 1;
-        $user->confirm_code = str_random(40);
+        $user->confirm_code = str_random(60);
         $user->save();
         Auth::login($user);
 
