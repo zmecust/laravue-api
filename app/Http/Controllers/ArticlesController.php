@@ -164,11 +164,10 @@ class ArticlesController extends Controller
 
     function contentImage(Request $request)
     {
-        return $this->responseSuccess('查询成功', $request->all());
         $file = $request->file('image');
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('articleImage'), $filename);
-        $article_image = env('APP_URL') . '/articleImage/'.$filename;
+        $file->move(public_path('../storage/app/public/articleImage'), $filename);
+        $article_image = env('APP_URL') . '/storage/articleImage/'.$filename;
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 
