@@ -33,9 +33,11 @@ class LikesController extends Controller
 
         if (count($liked['detached']) > 0) { //如果是取消收藏
             $user->decrement('likes_count');
+            $article->decrement('likes_count');
             return $this->responseSuccess('OK', ['liked' => false]);
         }
         $user->increment('likes_count');
+        $article->increment('likes_count');
         return $this->responseSuccess('OK', ['liked' => true]);
     }
 }

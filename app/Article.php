@@ -28,4 +28,13 @@ class Article extends BaseModel
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+    /**
+     * 获取这篇文章的评论以 parent_id 来分组
+     * @return static
+     */
+    public function getComments()
+    {
+        return $this->comments()->with('user')->get()->groupBy('parent_id');
+    }
 }
