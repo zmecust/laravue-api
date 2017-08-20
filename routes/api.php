@@ -29,6 +29,8 @@ Route::group([
     Route::resource('tags', 'TagsController'); //标签
     Route::get('hot_tags', 'TagsController@hotTags'); //获取分类标签
     Route::get('articles/{article}/comments', 'CommentsController@index'); //获取文章的评论
+    Route::get('articles/{article}/child_comments', 'CommentsController@childComments'); //获取文章的评论
+    Route::post('comments', 'CommentsController@store'); //增加文章的评论
 
     //用户相关
     Route::resource('users', 'UsersController');
