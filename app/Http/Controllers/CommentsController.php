@@ -29,6 +29,14 @@ class CommentsController extends Controller
     {
         $parent_id = Request('parent_id');
         $comments = $this->getChildComments($id, $parent_id);
+        $comments = collect($comments)->map(function ($comment) {
+            if (is_array($comment)) {
+                $comment = collect($comment)->map(function ($child_comment) {
+                    return $child_comment;
+                });
+            }
+            return $comment;
+        });
         return $this->responseSuccess('查询成功', $comments);
     }
 
@@ -46,7 +54,7 @@ class CommentsController extends Controller
                 $new_comments[] = $comment;
                 $comment_child = $this->getChildComments($id, $comment['id']);
                 if (! empty($comment_child)) {
-                    $new_comments[] = array_values($comment_child);
+                    $new_comments[] = $comment_child;
                 }
             }
         }
@@ -71,7 +79,11 @@ class CommentsController extends Controller
                 'last_comment_user_id' => $user->id,
                 'last_comment_time' => Carbon::now(),
             ]);
+            $comment = $comment->with(['user' => function ($query) {
+                $query->select('id', 'name', 'avatar');
+            }])->get();
             return $this->responseSuccess('OK', $comment);
         }
+        return $this->responseError('Has Something Wrong');
     }
 }
