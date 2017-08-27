@@ -74,4 +74,26 @@ class User extends Authenticatable
     {
         return $this->followers()->toggle($user);
     }
+
+    public function recordLastActivedAt()
+    {
+        // 这个 Redis 用于数据库更新，数据库每同步一次则清空一次该 Redis 。
+        $data = Cache::get('actived_time_for_update');
+        $data[$this->id] = Carbon::now()->toDateTimeString();
+        Cache::forever('actived_time_for_update', $data);
+
+        // 这个 Redis 用于读取，每次要获取活跃时间时，先到该 Redis 中获取数据。
+        $data = Cache::get('actived_time');
+        $data[$this->id] = Carbon::now()->toDateTimeString();
+        Cache::forever('actived_time', $data);
+    }
+
+    public function lastActivedTime()
+    {
+        $data = Cache::get('actived_time');
+        if(empty($data[$this->id])){
+            $data[$this->id] = $this->last_actived_at;
+        }
+        return $data[$this->id];
+    }
 }
