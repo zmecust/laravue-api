@@ -3,9 +3,11 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Auth;
+use Tymon\JWTAuth\Middleware\BaseMiddleware;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
-class RecordLastActivedTime
+class RecordLastActivedTime extends BaseMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,10 +18,17 @@ class RecordLastActivedTime
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check()) {
-            // 在这里记录用户的访问时间
-            Auth::user()->recordLastActivedAt();
+        if (! $token = $this->auth->setRequest($request)->getToken()) {
+            return $next($request);
         }
+
+        $user = $this->auth->authenticate($token);
+
+        if (! $user) {
+            return $next($request);
+        }
+
+        $user->recordLastActivedAt();
 
         return $next($request);
     }
