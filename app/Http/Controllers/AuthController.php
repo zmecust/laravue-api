@@ -47,7 +47,7 @@ class AuthController extends Controller
         $newUser = [
             'email' => $request->get('email'),
             'name' => $request->get('name'),
-            'avatar' => public_path('/image/avatar.jpeg'),
+            'avatar' => 'https://api.laravue.org/image/avatar.jpeg',
             'password' => $request->get('password'),
             'confirm_code' => str_random(60),
         ];
