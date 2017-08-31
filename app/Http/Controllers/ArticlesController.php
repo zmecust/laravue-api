@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Category;
 use Cache;
 use Auth;
 use Validator;
@@ -73,8 +74,11 @@ class ArticlesController extends Controller
             'body' => $request->get('body'),
             'user_id' => Auth::id(),
             'is_hidden' => $request->get('is_hidden'),
+            'category_id' => $request->get('category'),
         ];
         $article = $this->articleRepository->create($data);
+        $article->increment('category_id');
+        Category::find($request->get('category'))->increment('articles_count');
         Auth::user()->increment('articles_count');
         $article->tags()->attach($tags);
         Cache::tags('articles')->flush();

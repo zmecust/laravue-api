@@ -18,6 +18,11 @@ class Article extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     //帖子没有被隐藏
     public function scopeNotHidden($query)
     {

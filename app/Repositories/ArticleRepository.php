@@ -17,13 +17,13 @@ class ArticleRepository
     {
         if (empty($request->tag)) {
             return Cache::tags('articles')->remember('articles' . $page, $minutes = 10, function() {
-                return Article::notHidden()->with('user', 'tags')->latest('created_at')->paginate(30);
+                return Article::notHidden()->with('user', 'tags', 'category')->latest('created_at')->paginate(30);
             });
         } else {
             return Cache::tags('articles')->remember('articles' . $page . $request->tag, $minutes = 10, function() use ($request) {
                 return Article::notHidden()->whereHas('tags', function ($query) use ($request) {
                     $query->where('name', $request->tag);
-                })->with('user', 'tags')->latest('created_at')->paginate(30);
+                })->with('user', 'tags', 'category')->latest('created_at')->paginate(30);
             });
         }
     }
