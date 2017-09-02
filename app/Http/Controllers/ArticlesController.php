@@ -62,6 +62,7 @@ class ArticlesController extends Controller
             'body' => 'required|min:10',
             'tag' => 'required',
             'is_hidden' => 'required',
+            'category' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -127,6 +128,7 @@ class ArticlesController extends Controller
             'body' => 'required|min:10',
             'tag' => 'required',
             'is_hidden' => 'required',
+            'category' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -138,6 +140,7 @@ class ArticlesController extends Controller
             'title' => $request->get('title'),
             'body' => $request->get('body'),
             'is_hidden' => $request->get('is_hidden'),
+            'category_id' => $request->get('category'),
         ];
         $article = $this->articleRepository->byId($id);
         $article->update($data);
