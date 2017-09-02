@@ -161,7 +161,8 @@ class AuthController extends Controller
                 'avatar' => $githubUser->getAvatar(),
                 'email' => $githubUser->getEmail(),
                 'password' => $githubUser->getToken(),
-                'is_confirmed' => 1
+                'is_confirmed' => 1,
+                'confirm_code' => str_random(60)
             ]);
             $user->attachRole(3);
         }
