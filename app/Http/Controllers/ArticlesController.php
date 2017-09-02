@@ -174,7 +174,7 @@ class ArticlesController extends Controller
         $file = $request->file('image');
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
-        $article_image = 'https://api.laravue.org/storage/articleImage/'.$filename;
+        $article_image = env('API_URL') . '/storage/articleImage/'.$filename;
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 

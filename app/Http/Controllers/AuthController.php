@@ -47,7 +47,7 @@ class AuthController extends Controller
         $newUser = [
             'email' => $request->get('email'),
             'name' => $request->get('name'),
-            'avatar' => 'https://api.laravue.org/image/avatar.jpeg',
+            'avatar' => env('API_URL') . '/image/avatar.jpeg',
             'password' => $request->get('password'),
             'confirm_code' => str_random(60),
         ];
@@ -110,13 +110,12 @@ class AuthController extends Controller
         try {
             // attempt to verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {
-                $user = User::where($field, $request->get('login'))->first();
-
-                if (is_null($user)) {
-                    return $this->responseError('用户名或密码错误');
-                }
+               return $this->responseError('用户名或密码错误');
             }
-            $user = User::find(Auth::id());
+            $user = Auth::user();
+            if ($user->is_confirmed == 0) {
+                return $this->responseError('您还未激活该账号，请先前往邮箱激活');
+            }
             // 设置JWT令牌
             $user->jwt_token = [
                 'access_token' => $token,
@@ -141,7 +140,7 @@ class AuthController extends Controller
         return $this->responseSuccess('登出成功');
     }
 
-    //三方登录
+    // 第三方Github登录
     public function github()
     {
         $socialite = new SocialiteManager(config('services'));
@@ -156,16 +155,15 @@ class AuthController extends Controller
 
         if (in_array($githubUser->getNickname(), $user_names)) {
             $user = User::where('name', $githubUser->getNickname())->first();
-            Auth::login($user);
         } else {
             $user = User::create([
                 'name' => $githubUser->getNickname(),
                 'avatar' => $githubUser->getAvatar(),
                 'email' => $githubUser->getEmail(),
                 'password' => $githubUser->getToken(),
+                'is_confirmed' => 1
             ]);
-            $user->attachRole(2);
-            Auth::login($user);
+            $user->attachRole(3);
         }
 
         $token = JWTAuth::fromUser($user);

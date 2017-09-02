@@ -14,7 +14,7 @@
 Route::post('deploy', 'DeployController@deploy');
 
 //第三方账号登录
-Route::get('github','AuthController@github');
+//Route::get('github','AuthController@github');
 Route::get('github/login','AuthController@githubLogin');
 
 //生成文档

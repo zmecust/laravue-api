@@ -18,20 +18,21 @@ Route::group([
 ], function() {
     //Auth
     Route::post('user/login', 'AuthController@login'); //登录认证
+    Route::get('github','AuthController@github'); //第三方账号登录
     Route::post('user/register', 'AuthController@register'); //注册
     Route::get('/verify_email', 'AuthController@verifyToken'); //验证注册码
     Route::get('user/logout', 'AuthController@logout'); //退出
 
     //文章分类
-    Route::resource('articles', 'ArticlesController'); //文章
+    Route::resource('articles', 'ArticlesController'); //所有文章
     Route::post('content_image', 'ArticlesController@contentImage'); //上传文章图片
     Route::get('hot_articles', 'ArticlesController@hotArticles'); //获取热门话题
     Route::resource('tags', 'TagsController'); //标签
     Route::get('hot_tags', 'TagsController@hotTags'); //获取分类标签
     Route::get('articles/{article}/comments', 'CommentsController@index'); //获取文章的评论
-    Route::get('articles/{article}/child_comments', 'CommentsController@childComments'); //获取文章的评论
+    Route::get('articles/{article}/child_comments', 'CommentsController@childComments'); //获取文章的子评论
     Route::post('comments', 'CommentsController@store'); //增加文章的评论
-    Route::get('categories', 'CategoriesController@index'); //增加文章的评论
+    Route::get('categories', 'CategoriesController@index'); //获取文章的分类
 
     //用户相关
     Route::resource('users', 'UsersController');
