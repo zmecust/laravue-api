@@ -172,7 +172,7 @@ class ArticlesController extends Controller
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
         $article_image = env('APP_URL') . '/storage/articleImage/'.$filename;
-        return $this->responseSuccess('查询成功', ['url' => $article_image]);
+        return $this->responseSuccess('查询成功', ['url' => env('API_URL') . $article_image]);
     }
 
 }
