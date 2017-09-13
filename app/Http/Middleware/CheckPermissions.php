@@ -3,11 +3,10 @@
 namespace App\Http\Middleware;
 
 use Route;
-use Cache;
+use Auth;
 use Closure;
-use Entrust;
-use App\Models\User;
-use App\Models\Permission;
+use App\User;
+use App\Permission;
 
 class CheckPermissions
 {
@@ -28,10 +27,7 @@ class CheckPermissions
             return $next($request);
         }  //检查是否有权限
 
-        $access_token = $request->header('authorization');
-        $user_id = Cache::get('CMS'.$access_token);
-        $permissions = User::where('id', $user_id)->first()
-            ->roles()->first()
+        $permissions = Auth::user()->roles()->first()
             ->perms()->pluck('name')->toArray(); //获取当前用户所有权限名
 
         if (!in_array($uri_name, $permissions)) {

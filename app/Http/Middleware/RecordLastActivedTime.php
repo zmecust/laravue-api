@@ -4,13 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Tymon\JWTAuth\Middleware\BaseMiddleware;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class RecordLastActivedTime extends BaseMiddleware
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request. 记录用户的最后登陆时间，采用中间件拦截
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
