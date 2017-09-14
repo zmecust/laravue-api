@@ -54,7 +54,7 @@ class MenuRepository
      */
     public function getSidebarMenu($request, $parent_id = 0)
     {
-        $menus = $this->menu->where('parent_id', $parent_id)->orderBy('sort' ,'asc')->get()->toArray();
+        /*$menus = $this->menu->where('parent_id', $parent_id)->orderBy('sort' ,'asc')->get()->toArray();
         $sidebar_menus = array();
 
         if (!empty($menus)) {
@@ -79,6 +79,29 @@ class MenuRepository
                     //子菜单不为空放在 children 数组中
                     $sidebar_menus[$menu['id']]['children'] = array_values($menu_child);
                 }
+            }
+        }
+        return $sidebar_menus;*/
+
+        $menus = $this->menu->orderBy('sort' ,'asc')->get()->toArray();
+        $sidebar_menus = array();
+
+        if (!empty($menus)) {
+            foreach ($menus as $menu) {
+                //权限验证匹配uri验证uri对应权限
+                $permission_info = $this->permission->where(['uri' => $menu['name']])->pluck('name');
+
+                //不存在权限验证的直接通过，比如一级菜单
+                if (!empty($permission_info)) {
+                    $permissions = Auth::user()->roles()->first()
+                        ->perms()->pluck('name')->toArray(); //获取当前用户所有权限名
+                    if (!in_array(implode($permission_info->toArray()), $permissions)) {
+                        continue;
+                    }  //根据路由名称查询权限
+                    //用户权限检查，不存在的权限不显示
+                }
+
+                $sidebar_menus[] = $menu['name'];
             }
         }
         return $sidebar_menus;
