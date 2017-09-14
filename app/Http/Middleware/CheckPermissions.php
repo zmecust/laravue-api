@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Route;
 use Auth;
 use Closure;
-use App\User;
 use App\Permission;
 
 class CheckPermissions

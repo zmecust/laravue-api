@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 use Cache;
+use Auth;
 use App\Menu;
 use App\User;
 use App\Permission;
