@@ -20,7 +20,7 @@ class TagsController extends Controller
     public function hotTags()
     {
         if (empty($hotTags = Cache::get('hotTags_cache'))) {
-            $hotTags = Tag::where([])->orderBy('articles_count', 'desc')->take(20)->get();
+            $hotTags = Tag::where([])->orderBy('articles_count', 'desc')->take(30)->get();
             Cache::put('hotTags_cache', $hotTags, 10);
         }
         return $this->responseSuccess('查询成功', $hotTags);

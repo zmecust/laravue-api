@@ -163,7 +163,7 @@ class ArticlesController extends Controller
     public function hotArticles()
     {
         if (empty($hotArticles = Cache::get('hotArticles_cache'))) {
-            $hotArticles = Article::where([])->orderBy('comments_count', 'desc')->take(10)->get();
+            $hotArticles = Article::where([])->orderBy('comments_count', 'desc')->latest('updated_at')->take(10)->get();
             Cache::put('hotArticles_cache', $hotArticles, 10);
         }
         return $this->responseSuccess('查询成功', $hotArticles);
