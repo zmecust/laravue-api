@@ -28,19 +28,12 @@ class CommentsController extends Controller
     public function childComments($id)
     {
         $parent_id = Request('parent_id');
-        $comments = $this->getChildComments($id, $parent_id, $new_comments = []);
-//        $comments = collect($comments)->map(function ($comment) {
-//            if (is_array($comment)) {
-//                $comment = collect($comment)->map(function ($child_comment) {
-//                    return $child_comment;
-//                });
-//            }
-//            return $comment;
-//        });
-        return $this->responseSuccess('查询成功', $comments);
+        $new_comments = [];
+        $this->getChildComments($id, $parent_id, $new_comments);
+        return $this->responseSuccess('查询成功', $new_comments);
     }
 
-    protected function getChildComments($id, $parent_id, $new_comments)
+    protected function getChildComments($id, $parent_id, &$new_comments)
     {
         $comments = Comment::where('commentable_id', $id)->where('parent_id', $parent_id)
             ->with(['user' => function ($query) {
@@ -53,13 +46,9 @@ class CommentsController extends Controller
                 $comment['parent_name'] = $parent->name;
                 $comment['parent_user_id'] = $parent->id;
                 $new_comments[] = $comment;
-                $comment_child = $this->getChildComments($id, $comment['id'], $new_comments);
-                if (! empty($comment_child)) {
-                    $new_comments[] = $comment_child;
-                }
+                $this->getChildComments($id, $comment['id'], $new_comments);
             }
         }
-        return $new_comments;
     }
 
     public function store()
@@ -80,9 +69,16 @@ class CommentsController extends Controller
                 'last_comment_user_id' => $user->id,
                 'last_comment_time' => Carbon::now(),
             ]);
-            $comment = $comment->with(['user' => function ($query) {
+
+            $comment = Comment::where('id', $comment->id)->with(['user' => function ($query) {
                 $query->select('id', 'name', 'avatar');
-            }])->get();
+            }])->first();
+
+            if ($comment->parent_id !== 0) {
+                $parent = Comment::where('id', $comment->parent_id)->first()->user()->first();
+                $comment->parent_name = $parent->name;
+                $comment->parent_user_id = $parent->id;
+            }
             return $this->responseSuccess('OK', $comment);
         }
         return $this->responseError('Has Something Wrong');
