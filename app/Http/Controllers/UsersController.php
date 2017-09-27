@@ -31,7 +31,7 @@ class UsersController extends Controller
     public function userReplies($id)
     {
         if (empty($comments = Cache::get('user_replies' . $id))) {
-            $comments = Comment::where('user_id', $id)->with('article')->latest('created_at')->get();
+            $comments = Comment::where('user_id', $id)->withCertain('commentable', ['id', 'title', 'create_at'])->latest('created_at')->get();
             Cache::put('user_replies' . $id, $comments, 10);
         }
         return $this->responseSuccess('查询成功', $comments);
