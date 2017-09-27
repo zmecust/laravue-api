@@ -4,12 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use App\Comment;
+use App\Transformer\CommentTransformer;
 use App\User;
 use Cache;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+    protected $commentTransformer;
+
+    public function __construct(CommentTransformer $commentTransformer)
+    {
+        $this->commentTransformer = $commentTransformer;
+    }
+
     public function show($id)
     {
         if (empty($user = Cache::get('users_cache' . $id))) {
@@ -31,7 +39,8 @@ class UsersController extends Controller
     public function userReplies($id)
     {
         if (empty($comments = Cache::get('user_replies' . $id))) {
-            $comments = Comment::where('user_id', $id)->withCertain('commentable', ['id', 'title', 'create_at'])->latest('created_at')->get();
+            $comments = Comment::where('user_id', $id)->with('commentable')->latest('created_at')->get()->toArray();
+            $comments = $this->commentTransformer->transformCollection($comments);
             Cache::put('user_replies' . $id, $comments, 10);
         }
         return $this->responseSuccess('查询成功', $comments);
