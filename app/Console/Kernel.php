@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\SyncUserActivedTime::class,
+        \App\Console\Commands\Swoole::class,
     ];
 
     /**

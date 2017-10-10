@@ -19,7 +19,7 @@ class MenusTableSeeder extends Seeder
                 array (
                     'id' => 1,
                     'parent_id' => 0,
-                    'name' => 'parent/setting',
+                    'name' => '/parent/setting',
                     'display_name' => '系统管理',
                     'description' => NULL,
                     'sort' => 100,
@@ -30,7 +30,7 @@ class MenusTableSeeder extends Seeder
                 array (
                     'id' => 2,
                     'parent_id' => 1,
-                    'name' => 'menus/index',
+                    'name' => '/menus/index',
                     'display_name' => '菜单列表',
                     'description' => '菜单列表',
                     'sort' => 1,
@@ -41,7 +41,7 @@ class MenusTableSeeder extends Seeder
                 array (
                     'id' => 3,
                     'parent_id' => 1,
-                    'name' => 'roles/index',
+                    'name' => '/roles/index',
                     'display_name' => '角色列表',
                     'description' => '角色列表',
                     'sort' => 2,
@@ -52,7 +52,7 @@ class MenusTableSeeder extends Seeder
                 array (
                     'id' => 4,
                     'parent_id' => 1,
-                    'name' => 'users/index',
+                    'name' => '/users/index',
                     'display_name' => '用户列表',
                     'description' => '用户列表',
                     'sort' => 3,
@@ -63,12 +63,34 @@ class MenusTableSeeder extends Seeder
                 array (
                     'id' => 5,
                     'parent_id' => 1,
-                    'name' => 'permissions/index',
+                    'name' => '/permissions/index',
                     'display_name' => '权限列表',
                     'description' => '权限列表',
                     'sort' => 4,
                     'created_at' => '2017-05-03 05:32:58',
                     'updated_at' => '2017-05-03 05:32:58',
+                ),
+            5 =>
+                array (
+                    'id' => 6,
+                    'parent_id' => 0,
+                    'name' => '/parent/content',
+                    'display_name' => '内容管理',
+                    'description' => NULL,
+                    'sort' => 100,
+                    'created_at' => '2017-05-03 05:30:26',
+                    'updated_at' => '2017-05-03 05:36:15',
+                ),
+            6 =>
+                array (
+                    'id' => 7,
+                    'parent_id' => 6,
+                    'name' => '/articles/index',
+                    'display_name' => '文章列表',
+                    'description' => NULL,
+                    'sort' => 1,
+                    'created_at' => '2017-05-03 05:30:26',
+                    'updated_at' => '2017-05-03 05:36:15',
                 ),
         ));
 
