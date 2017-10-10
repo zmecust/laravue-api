@@ -26,9 +26,8 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
+    protected $appends = ['isOnLine'];
 
     public function setPasswordAttribute($password)
     {
@@ -97,5 +96,11 @@ class User extends Authenticatable
             $data[$this->id] = $this->last_actived_at;
         }
         return $data[$this->id];
+    }
+
+    public function getIsOnLineAttribute()
+    {
+        $key = Redis::hExists('USERS', $this->id);
+        return $key;
     }
 }
