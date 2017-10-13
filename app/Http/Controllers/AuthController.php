@@ -166,13 +166,17 @@ class AuthController extends Controller
             ]);
             $user->attachRole(3);
         }
+        return redirect('https://laravue.org/#/github/login?id=' . $user->id);
+    }
 
+    public function githubLoginRedirect()
+    {
+        $user = user::find(request('id'));
         $token = JWTAuth::fromUser($user);
         $user->jwt_token = [
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
-        return redirect('https://laravue.org/#/github/login?id=' . $user->id);
-        return $this->responseSuccess('登录成功', $user);
+        return $this->responseSuccess('登录成功', $user->toArray());
     }
 }
