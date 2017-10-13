@@ -23,6 +23,7 @@ class SwooleHandler
     public function onMessage($ws, $frame)
     {
         $uid = $frame->data;
+        echo "{$frame->data}";
         $fd = Redis::hGet('USERS', $uid);
         echo "client-{$fd} is send\n";
         $num = Message::query()->where('to_uid', $uid)->count();

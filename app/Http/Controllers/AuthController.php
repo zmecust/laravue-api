@@ -172,6 +172,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
+        return redirect('https://laravue.org/#/github/login?id=' . $user->id);
         return $this->responseSuccess('登录成功', $user);
     }
 }
