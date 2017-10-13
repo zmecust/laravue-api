@@ -16,7 +16,7 @@ Route::post('deploy', 'DeployController@deploy');
 //第三方账号回调登录
 Route::get('github','AuthController@github');
 Route::get('github/login','AuthController@githubLogin');
-Route::post('github/login/redirect','AuthController@githubLoginRedirect');
+Route::get('github/login/redirect','AuthController@githubLoginRedirect');
 
 //生成文档
 Route::get('/swagger', function(){
