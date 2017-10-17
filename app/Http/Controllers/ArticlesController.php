@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use App\Category;
+use App\Http\Requests\StoreArticleRequest;
 use Cache;
 use Auth;
 use Validator;
@@ -12,16 +13,34 @@ use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
 {
+    /**
+     * @var ArticleRepository
+     */
     protected $articleRepository;
 
-    public function __construct(ArticleRepository $articleRepository)
+    /**
+     * @var StoreArticleRequest
+     */
+    protected $storeArticleRequest;
+
+    /**
+     * ArticlesController constructor.
+     * @param ArticleRepository $articleRepository
+     * @param StoreArticleRequest $storeArticleRequest
+     */
+    public function __construct(ArticleRepository $articleRepository, StoreArticleRequest $storeArticleRequest)
     {
         $this->articleRepository = $articleRepository;
+        $this->storeArticleRequest = $storeArticleRequest;
         $this->middleware('jwt.auth', [
             'only' => ['store', 'update', 'destroy']
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
         $page = 1;
@@ -50,25 +69,11 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreArticleRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreArticleRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|between:4,100',
-            'body' => 'required|min:10',
-            'tag' => 'required',
-            'is_hidden' => 'required',
-            'category' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->responseError('表单验证失败', $validator->errors()->toArray());
-        }
-
         $tags = $this->articleRepository->normalizeTopics($request->get('tag'));
         $data = [
             'title' => $request->get('title'),
@@ -115,26 +120,12 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param StoreArticleRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(StoreArticleRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|between:4,100',
-            'body' => 'required|min:10',
-            'tag' => 'required',
-            'is_hidden' => 'required',
-            'category' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->responseError('表单验证失败', $validator->errors()->toArray());
-        }
-
         $tags = $this->articleRepository->normalizeTopics($request->get('tag'));
         $data = [
             'title' => $request->get('title'),
@@ -160,6 +151,9 @@ class ArticlesController extends Controller
         //
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function hotArticles()
     {
         if (empty($hotArticles = Cache::get('hotArticles_cache'))) {
@@ -169,6 +163,10 @@ class ArticlesController extends Controller
         return $this->responseSuccess('查询成功', $hotArticles);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     function contentImage(Request $request)
     {
         $file = $request->file('image');
