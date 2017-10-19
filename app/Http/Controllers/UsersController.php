@@ -7,6 +7,7 @@ use App\Comment;
 use App\Transformer\CommentTransformer;
 use App\User;
 use Cache;
+use Auth;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -16,6 +17,10 @@ class UsersController extends Controller
     public function __construct(CommentTransformer $commentTransformer)
     {
         $this->commentTransformer = $commentTransformer;
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.auth', [
+            'only' => ['editPassword']
+        ]);
     }
 
     public function show($id)
@@ -53,5 +58,21 @@ class UsersController extends Controller
             Cache::put('user_likes_articles' . $id, $articles, 10);
         }
         return $this->responseSuccess('查询成功', $articles);
+    }
+
+    public function editPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|between:6,16|confirmed'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseError('表单验证失败', $validator->errors()->toArray());
+        }
+
+        $user = Auth::user();
+        $user->update(['password' => request('password')]);
+
+        return $this->responseSuccess('密码重置成功');
     }
 }

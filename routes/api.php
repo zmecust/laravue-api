@@ -36,6 +36,7 @@ Route::group([
 
     //用户相关
     Route::resource('users', 'UsersController');
+    Route::post('edit_password', 'AuthController@editPassword'); //修改密码
     Route::get('users/{user}/articles', 'UsersController@userArticles'); //用户发表的文章
     Route::get('users/{user}/replies', 'UsersController@userReplies'); //用户的回复
     Route::get('article/is_like','LikesController@isLike');//用户是否点赞了一个话题
