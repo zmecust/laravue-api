@@ -40,7 +40,7 @@ class ArticleRepository
         return Article::find($id);
     }
 
-    public function normalizeTopics($tags)
+    public function createTopics($tags)
     {
         return collect($tags)->map(function ($tag) {
             if (is_numeric($tag)) {
@@ -50,6 +50,30 @@ class ArticleRepository
             $newTag = Tag::create(['name' => $tag, 'articles_count' => 1]);
             return $newTag->id;
         })->toArray();
+    }
+
+    public function editTopics($tags, $id)
+    {
+        $oldTags = Article::find($id)->tags->pluck('id')->toArray();
+        $reduceTags = array_diff($oldTags, $tags);
+        $addTags = array_diff($tags, $oldTags);
+
+        foreach($reduceTags as $reduceTag) {
+            $tag = Tag::where('id', $reduceTag);
+            $tagCount = $tag->count();
+            if ($tagCount > 1) {
+                \DB::table('article_tag')->where('tag_id', $reduceTag)->where('article_id', $id)->delete();
+                $tag->decrement('count', 1);
+            } else {
+                $tag->delete();
+            }
+        }
+
+        if (! is_null($addTags)) {
+            return $addTags;
+        } else {
+            return false;
+        }
     }
 
     public function create(array $attributes)

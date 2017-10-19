@@ -20,7 +20,7 @@ Route::group([
     Route::post('user/login', 'AuthController@login'); //登录认证
     Route::get('github','AuthController@github'); //第三方账号登录
     Route::post('user/register', 'AuthController@register'); //注册
-    Route::get('/verify_email', 'AuthController@verifyToken'); //验证注册码
+    Route::get('verify_email', 'AuthController@verifyToken'); //验证注册码
     Route::get('user/logout', 'AuthController@logout'); //退出
 
     //文章分类

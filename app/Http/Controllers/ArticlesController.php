@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Article;
 use App\Category;
 use App\Http\Requests\StoreArticleRequest;
+use App\Tag;
 use Cache;
 use Auth;
-use Validator;
 use App\Repositories\ArticleRepository;
 use Illuminate\Http\Request;
 
@@ -26,12 +26,10 @@ class ArticlesController extends Controller
     /**
      * ArticlesController constructor.
      * @param ArticleRepository $articleRepository
-     * @param StoreArticleRequest $storeArticleRequest
      */
-    public function __construct(ArticleRepository $articleRepository, StoreArticleRequest $storeArticleRequest)
+    public function __construct(ArticleRepository $articleRepository)
     {
         $this->articleRepository = $articleRepository;
-        $this->storeArticleRequest = $storeArticleRequest;
         $this->middleware('jwt.auth', [
             'only' => ['store', 'update', 'destroy']
         ]);
@@ -74,7 +72,7 @@ class ArticlesController extends Controller
      */
     public function store(StoreArticleRequest $request)
     {
-        $tags = $this->articleRepository->normalizeTopics($request->get('tag'));
+        $tags = $this->articleRepository->createTopics($request->get('tag'));
         $data = [
             'title' => $request->get('title'),
             'body' => $request->get('body'),
@@ -126,7 +124,6 @@ class ArticlesController extends Controller
      */
     public function update(StoreArticleRequest $request, $id)
     {
-        $tags = $this->articleRepository->normalizeTopics($request->get('tag'));
         $data = [
             'title' => $request->get('title'),
             'body' => $request->get('body'),
@@ -135,7 +132,19 @@ class ArticlesController extends Controller
         ];
         $article = $this->articleRepository->byId($id);
         $article->update($data);
-        $article->tags()->sync($tags);
+        if ($addTags = $this->articleRepository->editTopics($request->get('tag'), $id)) {
+            foreach ($addTags as $addTag) {
+                if(! is_numeric($addTag)){
+                    $article->tags()->create([
+                        'name' => $addTag,
+                        'articles_count' => 1,
+                    ]);
+                } else {
+                    $article->tags()->attach($addTag);
+                    Tag::where('id', $addTag)->increment('count', 1);
+                }
+            }
+        }
         Cache::tags('articles')->flush();
         return $this->responseSuccess('OK', $article);
     }

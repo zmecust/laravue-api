@@ -55,13 +55,13 @@ class Swoole extends Command
                 $this->ws->on('Open', [$handler, 'onOpen']);
                 $this->ws->on('Message', [$handler, 'onMessage']);
                 $this->ws->on('Close', [$handler, 'onClose']);
-                $this->ws->start();;
+                $this->ws->start();
                 break;
             case 'reload':
-                $this->ws->reload();;
+                $this->ws->reload();
                 break;
             case 'stop':
-                $this->ws->stop();;
+                $this->ws->stop();
                 break;
         }
 
