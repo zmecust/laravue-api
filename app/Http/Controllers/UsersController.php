@@ -8,6 +8,7 @@ use App\Transformer\CommentTransformer;
 use App\User;
 use Cache;
 use Auth;
+use Validator;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
