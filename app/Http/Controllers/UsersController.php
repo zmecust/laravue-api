@@ -20,7 +20,7 @@ class UsersController extends Controller
         $this->commentTransformer = $commentTransformer;
         // 执行 jwt.auth 认证
         $this->middleware('jwt.auth', [
-            'only' => ['editPassword']
+            'only' => ['editPassword', 'avatarUpload']
         ]);
     }
 
@@ -71,9 +71,24 @@ class UsersController extends Controller
             return $this->responseError('表单验证失败', $validator->errors()->toArray());
         }
 
-        $user = Auth::user();
-        $user->update(['password' => request('password')]);
-
+        Auth::user()->update(['password' => request('password')]);
         return $this->responseSuccess('密码重置成功');
+    }
+
+    public function avatarUpload(Request $request)
+    {
+        $file = $request->file('file');
+        $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('image'), $filename);
+        $avatar_image = env('API_URL') . '/image/' . $filename;
+        Auth::user()->update(['avatar' => $avatar_image]);
+        return $this->responseSuccess('修改成功', ['avatar' => $avatar_image]);
+    }
+
+    public function editUserInfo()
+    {
+        $data = ['real_name' => request('real_name'), 'city' => request('city')];
+        Auth::user()->update($data);
+        return $this->responseSuccess('个人信息修改成功', $data);
     }
 }
