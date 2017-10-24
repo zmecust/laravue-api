@@ -79,7 +79,9 @@ class UserRepository
                 $user->attachRoles($roles);
             } //写入新角色
         } else {
-            $user->update(['is_confirmed' => $request->is_confirmed, 'is_banned' => $request->is_banned]);
+            $user->is_confirmed = $request->is_confirmed;
+            $user->is_banned = $request->is_banned;
+            $user->save();
         }
 
         return $this->user->where('id', $id)->with([
