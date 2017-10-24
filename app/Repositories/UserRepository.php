@@ -67,15 +67,20 @@ class UserRepository
     public function updateUser($request, $id)
     {
         $user = $this->user->findOrFail($id);
-        $user->detachRoles($user->roles); //清除以前的角色
 
-        if (is_array($request->roles)) {
-            $roles = [];
-            foreach ($request->roles as $description) {
-                $roles[] = $this->role->where('description', $description)->first();
-            }
-            $user->attachRoles($roles);
-        } //写入新角色
+        if($request->roles) {
+            $user->detachRoles($user->roles); //清除以前的角色
+
+            if (is_array($request->roles)) {
+                $roles = [];
+                foreach ($request->roles as $description) {
+                    $roles[] = $this->role->where('description', $description)->first();
+                }
+                $user->attachRoles($roles);
+            } //写入新角色
+        } else {
+            $user->update(['is_confirmed' => $request->is_confirmed, 'is_banned' => $request->is_banned]);
+        }
 
         return $this->user->where('id', $id)->with([
             'roles' => function($query) {
