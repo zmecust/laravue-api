@@ -104,4 +104,10 @@ class User extends Authenticatable
         $key = Redis::hExists('USERS', $this->id);
         return $key;
     }
+
+    //用户的私信
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'to_uid');
+    }
 }

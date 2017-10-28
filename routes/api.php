@@ -41,10 +41,12 @@ Route::group([
     Route::post('edit_user_info', 'UsersController@editUserInfo'); //修改个人信息
     Route::get('users/{user}/articles', 'UsersController@userArticles'); //用户发表的文章
     Route::get('users/{user}/replies', 'UsersController@userReplies'); //用户的回复
-    Route::get('article/is_like','LikesController@isLike');//用户是否点赞了一个话题
-    Route::get('article/like','LikesController@likeThisArticle');//用户点赞一个话题
-    Route::get('user/is_follow','FollowsController@isFollow');//用户是否关注一个用户
-    Route::get('user/follow','FollowsController@followThisUser');//用户关注一个用户
+    Route::get('article/is_like','LikesController@isLike'); //用户是否点赞了一个话题
+    Route::get('article/like','LikesController@likeThisArticle'); //用户点赞一个话题
+    Route::get('user/is_follow','FollowsController@isFollow'); //用户是否关注一个用户
+    Route::get('user/follow','FollowsController@followThisUser'); //用户关注一个用户
+    Route::post('message/store','MessagesController@store'); //用户发送私信
+    Route::get('message/count','MessagesController@count'); //用户新消息数
 
 });
 

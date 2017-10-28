@@ -15,13 +15,13 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title', 200)->nullable()->comment('标题');
             $table->integer('from_uid')->unsigned()->nullable()->default(0)->comment('发自');
             $table->integer('to_uid')->unsigned()->nullable()->default(0)->comment('发送至');
-            $table->string('content', 500)->nullable()->comment('内容');
+            $table->string('content', 1000)->nullable()->comment('内容');
             $table->boolean('is_read')->nullable()->default(0)->comment('0未读 1已读');
-            $table->integer('send_at')->unsigned()->nullable()->default(0)->comment('发送时间');
-            $table->integer('created_at')->unsigned()->nullable()->default(0)->comment('创建时间');
+            $table->bigInteger('dialog_id')->nullable();
+            $table->timestamp('read_at')->nullable()->comment('读取时间');
+            $table->timestamps();
         });
     }
 
