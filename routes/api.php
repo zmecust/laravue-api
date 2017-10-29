@@ -47,6 +47,8 @@ Route::group([
     Route::get('user/follow','FollowsController@followThisUser'); //用户关注一个用户
     Route::post('message/store','MessagesController@store'); //用户发送私信
     Route::get('message/count','MessagesController@count'); //用户新消息数
+    Route::get('notifications', 'NotificationController@index'); //获取用户的所有通知
+    Route::get('notifications/read', 'NotificationController@read'); //通知标记为已读
 
 });
 

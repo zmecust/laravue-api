@@ -36,6 +36,6 @@ class MessagesController extends Controller
     public function count()
     {
         $user = Auth::user();
-        return $this->responseSuccess('OK', ['count' => $user->notifications->count()]);
+        return $this->responseSuccess('OK', ['count' => $user->unreadNotifications->count()]);
     }
 }

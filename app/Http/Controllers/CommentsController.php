@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use App\Comment;
+use App\Notifications\CommentArticleNotification;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -73,12 +74,23 @@ class CommentsController extends Controller
             $comment = Comment::where('id', $comment->id)->with(['user' => function ($query) {
                 $query->select('id', 'name', 'avatar');
             }])->first();
-
+            $article = $article->first();
+            $data = [
+                'name' => $user->name,
+                'user_id' => $user->id,
+                'title' => $article->title,
+                'title_id' => $article->id,
+                'comment' => $comment->body
+            ];
             if ($comment->parent_id !== 0) {
                 $parent = Comment::where('id', $comment->parent_id)->first()->user()->first();
                 $comment->parent_name = $parent->name;
                 $comment->parent_user_id = $parent->id;
+                $parent->notify(new CommentArticleNotification($data));
+            } else {
+                $article->user->notify(new CommentArticleNotification($data));
             }
+
             return $this->responseSuccess('OK', $comment);
         }
         return $this->responseError('Has Something Wrong');
