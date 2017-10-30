@@ -8,7 +8,6 @@
 
 namespace App\Transformer;
 
-
 class CommentTransformer extends Transformer
 {
     public function transform($item)

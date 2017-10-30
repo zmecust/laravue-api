@@ -6,6 +6,7 @@ use App\Article;
 use App\Category;
 use App\Http\Requests\StoreArticleRequest;
 use App\Tag;
+use App\Transformer\ArticleLikesTransformer;
 use Cache;
 use Auth;
 use App\Repositories\ArticleRepository;
@@ -23,13 +24,13 @@ class ArticlesController extends Controller
      */
     protected $storeArticleRequest;
 
-    /**
-     * ArticlesController constructor.
-     * @param ArticleRepository $articleRepository
-     */
-    public function __construct(ArticleRepository $articleRepository)
+    protected $articleLikesTransformer;
+
+    public function __construct(ArticleRepository $articleRepository, ArticleLikesTransformer $articleLikesTransformer)
     {
         $this->articleRepository = $articleRepository;
+        $this->articleLikesTransformer = $articleLikesTransformer;
+
         $this->middleware('jwt.auth', [
             'only' => ['store', 'update', 'destroy']
         ]);
@@ -183,6 +184,17 @@ class ArticlesController extends Controller
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
         $article_image = env('API_URL') . '/storage/articleImage/'.$filename;
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
+    }
+
+    public function like($id)
+    {
+        $article = Article::find($id);
+
+        if (! empty($article)) {
+            return $this->responseSuccess('查询成功', $this->articleLikesTransformer->transformCollection($article->likes->toArray()));
+        } else {
+            return $this->responseError('未找到该文章信息');
+        }
     }
 
 }

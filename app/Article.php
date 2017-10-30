@@ -42,4 +42,9 @@ class Article extends BaseModel
     {
         return $this->comments()->with('user')->get()->groupBy('parent_id');
     }
+
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'likes')->withTimestamps();
+    }
 }
