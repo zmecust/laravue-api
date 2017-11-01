@@ -179,7 +179,7 @@ class ArticlesController extends Controller
      */
     function contentImage(Request $request)
     {
-        $file = $request->file('image');
+        $file = $request->file('file');
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
         $article_image = env('API_URL') . '/storage/articleImage/'.$filename;
