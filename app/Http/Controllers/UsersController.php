@@ -82,7 +82,7 @@ class UsersController extends Controller
         $file->move(public_path('image'), $filename);
         $avatar_image = env('API_URL') . '/image/' . $filename;
         Auth::user()->update(['avatar' => $avatar_image]);
-        return $this->responseSuccess('修改成功', ['avatar' => $avatar_image]);
+        return $this->responseSuccess('修改成功', ['url' => $avatar_image]);
     }
 
     public function editUserInfo()
