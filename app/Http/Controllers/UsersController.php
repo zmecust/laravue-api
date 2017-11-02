@@ -81,7 +81,9 @@ class UsersController extends Controller
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('image'), $filename);
         $avatar_image = env('API_URL') . '/image/' . $filename;
-        Auth::user()->update(['avatar' => $avatar_image]);
+        $user = Auth::user();
+        $user->avatar = $avatar_image;
+        $user->save();
         return $this->responseSuccess('修改成功', ['url' => $avatar_image]);
     }
 
