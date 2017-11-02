@@ -45,6 +45,6 @@ class LikesController extends Controller
         $article->user->notify(new LikeArticleNotification($data));
         $user->increment('likes_count');
         $article->increment('likes_count');
-        return $this->responseSuccess('OK', ['liked' => true]);
+        return $this->responseSuccess('OK', ['liked' => true, 'id' => $user->id, 'name' => $user->name, 'avatar' => $user->avatar]);
     }
 }

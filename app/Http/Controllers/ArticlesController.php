@@ -76,6 +76,7 @@ class ArticlesController extends Controller
         $tags = $this->articleRepository->createTopics($request->get('tag'));
         $data = [
             'title' => $request->get('title'),
+            'article_url' => $request->get('article_url'),
             'body' => $request->get('body'),
             'user_id' => Auth::id(),
             'is_hidden' => $request->get('is_hidden'),
@@ -127,6 +128,7 @@ class ArticlesController extends Controller
     {
         $data = [
             'title' => $request->get('title'),
+            'article_url' => $request->get('article_url'),
             'body' => $request->get('body'),
             'is_hidden' => $request->get('is_hidden'),
             'category_id' => $request->get('category'),
