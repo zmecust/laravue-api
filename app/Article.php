@@ -5,7 +5,7 @@ namespace App;
 class Article extends BaseModel
 {
     protected $fillable = [
-        'title', 'body', 'user_id'
+        'title', 'body', 'user_id', 'article_url'
     ];
 
     public function tags()
