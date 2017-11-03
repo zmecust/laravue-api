@@ -229,4 +229,9 @@ class ArticlesController extends Controller
         }
     }
 
+    public function search()
+    {
+        $articles = Article::search(request('q'), null, true)->paginate(30);
+        return $this->responseSuccess('查询成功', $articles);
+    }
 }

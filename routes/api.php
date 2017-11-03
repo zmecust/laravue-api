@@ -35,6 +35,7 @@ Route::group([
     Route::post('comments', 'CommentsController@store'); //增加文章的评论
     Route::get('categories', 'CategoriesController@index'); //获取文章的分类
     Route::get('articles/{article}/like', 'ArticlesController@like'); //获取文章的所有点赞
+    Route::get('search', 'ArticlesController@search');
 
     //用户相关
     Route::resource('users', 'UsersController');

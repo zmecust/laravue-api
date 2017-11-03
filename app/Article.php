@@ -2,10 +2,21 @@
 
 namespace App;
 
+use Nicolaslopezj\Searchable\SearchableTrait;
+
 class Article extends BaseModel
 {
+    use SearchableTrait;
+
     protected $fillable = [
         'title', 'body', 'user_id', 'article_url'
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'articles.title' => 10,
+            'articles.body'  => 5,
+        ]
     ];
 
     public function tags()
