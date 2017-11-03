@@ -25,8 +25,16 @@ class ArticlesController extends Controller
      */
     protected $storeArticleRequest;
 
+    /**
+     * @var ArticleLikesTransformer
+     */
     protected $articleLikesTransformer;
 
+    /**
+     * ArticlesController constructor.
+     * @param ArticleRepository $articleRepository
+     * @param ArticleLikesTransformer $articleLikesTransformer
+     */
     public function __construct(ArticleRepository $articleRepository, ArticleLikesTransformer $articleLikesTransformer)
     {
         $this->articleRepository = $articleRepository;
@@ -189,6 +197,11 @@ class ArticlesController extends Controller
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 
+    /**
+     * 上传文章封面
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     function articleImage(Request $request)
     {
         $file = $request->file('file');
@@ -200,6 +213,11 @@ class ArticlesController extends Controller
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 
+    /**
+     * 获取文章的点赞信息
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function like($id)
     {
         $article = Article::find($id);

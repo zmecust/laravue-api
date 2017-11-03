@@ -8,6 +8,9 @@ use DB;
 
 class TagsController extends Controller
 {
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         if (empty($tags = Cache::get('Tags_cache'))) {
@@ -17,6 +20,9 @@ class TagsController extends Controller
         return $this->responseSuccess('查询成功', $tags);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function hotTags()
     {
         if (empty($hotTags = Cache::get('hotTags_cache'))) {

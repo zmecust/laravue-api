@@ -9,12 +9,19 @@ use Illuminate\Http\Request;
 
 class LikesController extends Controller
 {
+    /**
+     * LikesController constructor.
+     */
     public function __construct()
     {
         $this->middleware('jwt.auth');
     }
 
-    //用户是否点赞了这个话题
+    /**
+     * 用户是否点赞了这个话题
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function isLike(Request $request)
     {
         $user =  Auth::user();
@@ -25,7 +32,11 @@ class LikesController extends Controller
         return $this->responseSuccess('OK', ['liked' => false]);
     }
 
-    //点赞该话题
+    /**
+     * 点赞该话题
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function likeThisArticle(Request $request)
     {
         $user =  Auth::user();

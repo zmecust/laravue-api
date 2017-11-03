@@ -9,11 +9,18 @@ use Illuminate\Http\Request;
 
 class FollowsController extends Controller
 {
+    /**
+     * FollowsController constructor.
+     */
     public function __construct()
     {
         $this->middleware('jwt.auth');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function isFollow(Request $request)
     {
         $user = Auth::user();
@@ -24,6 +31,10 @@ class FollowsController extends Controller
         return $this->responseSuccess('OK', ['followed' => false]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function followThisUser(Request $request)
     {
         $user = Auth::user();

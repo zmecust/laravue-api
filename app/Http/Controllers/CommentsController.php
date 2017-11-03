@@ -7,10 +7,12 @@ use App\Comment;
 use App\Notifications\CommentArticleNotification;
 use Auth;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class CommentsController extends Controller
 {
+    /**
+     * CommentsController constructor.
+     */
     public function __construct()
     {
         $this->middleware('jwt.auth', [
@@ -18,6 +20,10 @@ class CommentsController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index($id)
     {
         $comments = Comment::where('commentable_id', $id)->where('parent_id', 0)->with(['user' => function ($query) {
@@ -26,6 +32,10 @@ class CommentsController extends Controller
         return $this->responseSuccess('OK', $comments);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function childComments($id)
     {
         $parent_id = Request('parent_id');
@@ -34,6 +44,11 @@ class CommentsController extends Controller
         return $this->responseSuccess('查询成功', $new_comments);
     }
 
+    /**
+     * @param $id
+     * @param $parent_id
+     * @param $new_comments
+     */
     protected function getChildComments($id, $parent_id, &$new_comments)
     {
         $comments = Comment::where('commentable_id', $id)->where('parent_id', $parent_id)
@@ -52,6 +67,9 @@ class CommentsController extends Controller
         }
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store()
     {
         $user = Auth::user();

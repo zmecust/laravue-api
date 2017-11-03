@@ -9,12 +9,18 @@ use Auth;
 
 class MessagesController extends Controller
 {
+    /**
+     * MessagesController constructor.
+     */
     public function __construct()
     {
         $this->middleware('jwt.auth');
     }
 
     //保存私信内容
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store()
     {
         $toUserId = request('user_id');
@@ -33,6 +39,9 @@ class MessagesController extends Controller
         return $this->responseError('发送失败');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function count()
     {
         $user = Auth::user();

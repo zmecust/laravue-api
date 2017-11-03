@@ -20,6 +20,9 @@ use Overtrue\Socialite\SocialiteManager;
 
 class AuthController extends Controller
 {
+    /**
+     * AuthController constructor.
+     */
     public function __construct()
     {
         // 执行 jwt.auth 认证
@@ -59,6 +62,9 @@ class AuthController extends Controller
         return $this->responseSuccess('感谢您支持LaraVue社区，请前往邮箱激活该用户');
     }
 
+    /**
+     * @param $user
+     */
     private function sendVerifyEmailTo($user)
     {
         $data = [ 'url' => 'https://laravue.org/#/verify_email/' . $user->confirm_code,
@@ -71,6 +77,9 @@ class AuthController extends Controller
         });
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function verifyToken()
     {
         $user = User::where('confirm_code', Request('code'))->first();
@@ -90,6 +99,10 @@ class AuthController extends Controller
         return $this->responseSuccess('注册成功', $user);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -128,6 +141,9 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout()
     {
         try {
@@ -141,12 +157,18 @@ class AuthController extends Controller
     }
 
     // 第三方Github登录
+    /**
+     * @return mixed
+     */
     public function github()
     {
         $socialite = new SocialiteManager(config('services'));
         return $socialite->driver('github')->redirect();
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function githubLogin()
     {
         $socialite = new SocialiteManager(config('services'));
@@ -169,6 +191,9 @@ class AuthController extends Controller
         return redirect('https://laravue.org/#/github/login?id=' . $user->id);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function githubLoginRedirect()
     {
         $user = user::find(request('id'));

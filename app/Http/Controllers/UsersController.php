@@ -13,8 +13,15 @@ use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+    /**
+     * @var CommentTransformer
+     */
     protected $commentTransformer;
 
+    /**
+     * UsersController constructor.
+     * @param CommentTransformer $commentTransformer
+     */
     public function __construct(CommentTransformer $commentTransformer)
     {
         $this->commentTransformer = $commentTransformer;
@@ -24,6 +31,10 @@ class UsersController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
         if (empty($user = Cache::get('users_cache' . $id))) {
@@ -33,6 +44,10 @@ class UsersController extends Controller
         return $this->responseSuccess('查询成功', $user);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function userArticles($id)
     {
         if (empty($articles = Cache::get('user_articles' . $id))) {
@@ -42,6 +57,10 @@ class UsersController extends Controller
         return $this->responseSuccess('查询成功', $articles);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function userReplies($id)
     {
         if (empty($comments = Cache::get('user_replies' . $id))) {
@@ -52,6 +71,10 @@ class UsersController extends Controller
         return $this->responseSuccess('查询成功', $comments);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function userLikesArticles($id)
     {
         if (empty($articles = Cache::get('user_likes_articles' . $id))) {
@@ -61,6 +84,10 @@ class UsersController extends Controller
         return $this->responseSuccess('查询成功', $articles);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function editPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -71,10 +98,14 @@ class UsersController extends Controller
             return $this->responseError('表单验证失败', $validator->errors()->toArray());
         }
 
-        Auth::user()->update(['password' => request('password')]);
+        User::where('id', Auth::id())->update(['password' => request('password')]);
         return $this->responseSuccess('密码重置成功');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function avatarUpload(Request $request)
     {
         $file = $request->file('file');
@@ -87,10 +118,13 @@ class UsersController extends Controller
         return $this->responseSuccess('修改成功', ['url' => $avatar_image]);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function editUserInfo()
     {
         $data = ['real_name' => request('real_name'), 'city' => request('city')];
-        Auth::user()->update($data);
+        User::where('id', Auth::id())->update($data);
         return $this->responseSuccess('个人信息修改成功', $data);
     }
 }
