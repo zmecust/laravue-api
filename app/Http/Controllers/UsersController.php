@@ -27,7 +27,7 @@ class UsersController extends Controller
         $this->commentTransformer = $commentTransformer;
         // 执行 jwt.auth 认证
         $this->middleware('jwt.auth', [
-            'only' => ['editPassword', 'avatarUpload']
+            'except' => ['show']
         ]);
     }
 
@@ -51,7 +51,15 @@ class UsersController extends Controller
     public function userArticles($id)
     {
         if (empty($articles = Cache::get('user_articles' . $id))) {
-            $articles = Article::where('user_id', $id)->latest('created_at')->get();
+            $articles = Article::where('user_id', $id)->latest('created_at')->get()->map(function($item) {
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'comments_count' => $item->comments_count,
+                    'likes_count' => $item->likes_count,
+                    'created_at' => $item->created_at->toDateTimeString()
+                ];
+            });;
             Cache::put('user_articles' . $id, $articles, 10);
         }
         return $this->responseSuccess('查询成功', $articles);
@@ -75,11 +83,30 @@ class UsersController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userLikesArticles($id)
+    public function likeArticles($id)
     {
         if (empty($articles = Cache::get('user_likes_articles' . $id))) {
-            $articles = Comment::where('user_id', $id)->with('article')->latest('created_at')->get();
+            $articles = User::find($id)->likes->map(function($item) {
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'comments_count' => $item->comments_count,
+                    'likes_count' => $item->likes_count,
+                    'created_at' => $item->created_at->toDateTimeString()
+                ];
+            });
             Cache::put('user_likes_articles' . $id, $articles, 10);
+        }
+        return $this->responseSuccess('查询成功', $articles);
+    }
+
+    public function followUsers($id)
+    {
+        if (empty($articles = Cache::get('user_follow_users' . $id))) {
+            $articles = User::find($id)->followers->map(function($item) {
+                return [ 'id' => $item->id, 'name' => $item->name, 'avatar' => $item->avatar ];
+            });
+            Cache::put('user_follow_users' . $id, $articles, 10);
         }
         return $this->responseSuccess('查询成功', $articles);
     }
