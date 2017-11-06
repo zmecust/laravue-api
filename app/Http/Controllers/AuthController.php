@@ -50,7 +50,7 @@ class AuthController extends Controller
         $newUser = [
             'email' => $request->get('email'),
             'name' => $request->get('name'),
-            'avatar' => env('API_URL') . '/image/avatar.jpeg',
+            'avatar' => env('APP_URL') . '/image/avatar.jpeg',
             'password' => $request->get('password'),
             'confirm_code' => str_random(60),
         ];

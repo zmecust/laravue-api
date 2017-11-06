@@ -193,7 +193,7 @@ class ArticlesController extends Controller
         $file = $request->file('file');
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
-        $article_image = env('API_URL') . '/storage/articleImage/'.$filename;
+        $article_image = env('APP_URL') . '/storage/articleImage/'.$filename;
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 
@@ -209,7 +209,7 @@ class ArticlesController extends Controller
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
         Image::configure(array('driver' => 'imagick'));
         Image::make(public_path('../storage/app/public/articleImage/' . $filename))->fit(300, 200)->save();
-        $article_image = env('API_URL') . '/storage/articleImage/'.$filename;
+        $article_image = env('APP_URL') . '/storage/articleImage/'.$filename;
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 
