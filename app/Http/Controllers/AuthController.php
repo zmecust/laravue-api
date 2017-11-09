@@ -188,7 +188,12 @@ class AuthController extends Controller
             ]);
             $user->attachRole(3);
         }
-        return redirect('https://laravue.org/#/github/login?id=' . $user->id);
+        $token = JWTAuth::fromUser($user);
+        $user->jwt_token = [
+            'access_token' => $token,
+            'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
+        ];
+        return redirect('https://laravue.org/#/github/login')->cookie('user', $user, 24*365);
     }
 
     /**
