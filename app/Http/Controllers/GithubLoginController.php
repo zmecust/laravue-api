@@ -33,8 +33,10 @@ class GithubLoginController extends Controller
                 'redirect_uri' => config('services.github.redirect'),
                 'client_id' => config('services.github.client_id'),
                 'response_type' => 'code',
-                'scope' => '',
                 'state' => str_random(10),
+            ],
+            'headers' => [
+                'Accept' => 'application/vnd.github.v3+json',
             ]
         ]);
     }
