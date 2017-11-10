@@ -16,11 +16,10 @@ Route::post('deploy', 'DeployController@deploy');
 //第三方账号回调登录
 Route::get('github','AuthController@github');
 Route::get('github/login','AuthController@githubLogin');
-Route::get('github/login/redirect','AuthController@githubLoginRedirect')->middleware('cors');
 
 //生成文档
-Route::get('/swagger', function(){
-    $swagger = \Swagger\scan(public_path('/../doc/ApiDoc.php'));
-    header('Content-Type: application/json');
-    return $swagger;
-});
+//Route::get('/swagger', function(){
+//    $swagger = \Swagger\scan(public_path('/../doc/ApiDoc.php'));
+//    header('Content-Type: application/json');
+//    return $swagger;
+//});

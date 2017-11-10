@@ -195,18 +195,4 @@ class AuthController extends Controller
         ];
         return redirect('https://laravue.org/#/github/login')->cookie('user', $user, 24*365);
     }
-
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function githubLoginRedirect()
-    {
-        $user = user::find(request('id'));
-        $token = JWTAuth::fromUser($user);
-        $user->jwt_token = [
-            'access_token' => $token,
-            'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
-        ];
-        return $this->responseSuccess('登录成功', $user->toArray());
-    }
 }

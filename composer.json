@@ -13,7 +13,7 @@
         "laravel/tinker": "~1.0",
         "naux/sendcloud": "^1.1",
         "nicolaslopezj/searchable": "^1.9",
-        "overtrue/socialite": "~1.1",
+        "overtrue/socialite": "~1.3",
         "predis/predis": "^1.1",
         "tymon/jwt-auth": "0.5.*",
         "zircote/swagger-php": "^2.0",

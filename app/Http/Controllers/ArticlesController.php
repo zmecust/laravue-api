@@ -59,24 +59,24 @@ class ArticlesController extends Controller
 
         $articles = $this->articleRepository->getArticles($page, $request);
 
-        $articles = collect($articles)->map(function($items) {
-            if (is_array($items)) {
-                return collect($items)->map(function($item) {
-                    $data = [];
-                    foreach ($item as $key => $value) {
-                        if ($key !== 'body') {
-                            $data[$key] = $value;
-                        } else {
-                            $encode = mb_detect_encoding($value, ['ASCII', 'UTF-8', 'GB2312', 'GBK', 'BIG5']);
-                            dump($encode);
-                            $data[$key] = mb_convert_encoding($value, 'unicode', $encode);
-                        }
-                    }
-                    return $data;
-                })->toArray();
-            }
-            return $items;
-        });
+//        $articles = collect($articles)->map(function($items) {
+//            if (is_array($items)) {
+//                return collect($items)->map(function($item) {
+//                    $data = [];
+//                    foreach ($item as $key => $value) {
+//                        if ($key !== 'body') {
+//                            $data[$key] = $value;
+//                        } else {
+//                            $encode = mb_detect_encoding($value, ['ASCII', 'UTF-8', 'GB2312', 'GBK', 'BIG5']);
+//                            dump($encode);
+//                            $data[$key] = mb_convert_encoding($value, 'unicode', $encode);
+//                        }
+//                    }
+//                    return $data;
+//                })->toArray();
+//            }
+//            return $items;
+//        });
 
         if (! empty($articles)) {
             return $this->responseSuccess('OK', $articles);
