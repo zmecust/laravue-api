@@ -155,44 +155,4 @@ class AuthController extends Controller
         }
         return $this->responseSuccess('登出成功');
     }
-
-    // 第三方Github登录
-    /**
-     * @return mixed
-     */
-    public function github()
-    {
-        $socialite = new SocialiteManager(config('services'));
-        return $socialite->driver('github')->redirect();
-    }
-
-    /**
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function githubLogin()
-    {
-        $socialite = new SocialiteManager(config('services'));
-        $githubUser = $socialite->driver('github')->user();
-        $user_names = User::pluck('name')->toArray();
-
-        if (in_array($githubUser->getNickname(), $user_names)) {
-            $user = User::where('name', $githubUser->getNickname())->first();
-        } else {
-            $user = User::create([
-                'name' => $githubUser->getNickname(),
-                'avatar' => $githubUser->getAvatar(),
-                'email' => $githubUser->getEmail(),
-                'password' => $githubUser->getToken(),
-                'is_confirmed' => 1,
-                'confirm_code' => str_random(60)
-            ]);
-            $user->attachRole(3);
-        }
-        $token = JWTAuth::fromUser($user);
-        $user->jwt_token = [
-            'access_token' => $token,
-            'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
-        ];
-        return redirect('https://laravue.org/#/github/login')->cookie('user', $user, 24*365);
-    }
 }
