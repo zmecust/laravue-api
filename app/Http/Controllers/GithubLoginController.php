@@ -51,7 +51,7 @@ class GithubLoginController extends Controller
         ]);
 
         $access_token = json_decode((string) $response->getBody(), true)['access_token'];
-
+        dd($access_token);
         $response = $this->client->get(self::GET_USER_INFO . $access_token, [
             'headers' => [
                 'Accept' => 'application/vnd.github.v3+json',
