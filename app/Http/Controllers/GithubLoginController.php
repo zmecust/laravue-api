@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 
 class GithubLoginController extends Controller
@@ -39,6 +40,9 @@ class GithubLoginController extends Controller
         return redirect(self::GET_CODE . '?' . http_build_query($codeFields, '', '&', PHP_QUERY_RFC1738));
     }
 
+    /**
+     * @return $this|\Illuminate\Http\JsonResponse
+     */
     public function githubLogin()
     {
         $response = $this->client->post(self::GET_ACCESS_TOKEN, [
@@ -74,7 +78,7 @@ class GithubLoginController extends Controller
             ]);
             $user->attachRole(3);
         }
-        $token = JWTAuth::fromUser($user);
+        $token = \JWTAuth::fromUser($user);
         $user->jwt_token = [
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
