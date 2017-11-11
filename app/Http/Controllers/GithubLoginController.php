@@ -47,6 +47,7 @@ class GithubLoginController extends Controller
                 'code' => request('code'),
                 'redirect_uri' => config('services.github.redirect')
             ],
+            'headers' => ['Accept' => 'application/json']
         ]);
 
         $body = json_decode((string) $response->getBody(), true);
