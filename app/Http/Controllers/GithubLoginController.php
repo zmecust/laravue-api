@@ -50,13 +50,13 @@ class GithubLoginController extends Controller
             ],
         ]);
 
-        $access_token = json_decode((string) $response->getBody(), true);
-        dd($access_token);
-        $response = $this->client->get(self::GET_USER_INFO . $access_token, [
-            'headers' => [
-                'Accept' => 'application/vnd.github.v3+json',
-            ],
-        ]);
+        $body = json_decode((string) $response->getBody(), true);
+
+        if (empty($body['access_token'])) {
+            return $this->responseError('Authorize Failed: ' . json_encode($body, JSON_UNESCAPED_UNICODE));
+        }
+
+        $response = $this->client->get(self::GET_USER_INFO . $body['access_token']);
 
         $githubUser = json_decode((string) $response->getBody(), true);
         dd($githubUser);
