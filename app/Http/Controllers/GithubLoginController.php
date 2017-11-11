@@ -92,6 +92,6 @@ class GithubLoginController extends Controller
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
 
-        return $this->responseSuccess('登录成功', $user);
+        return $this->responseSuccess('登录成功', $user->toArray());
     }
 }
