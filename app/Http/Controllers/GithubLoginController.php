@@ -50,7 +50,7 @@ class GithubLoginController extends Controller
         ]);
 
         $body = json_decode((string) $response->getBody(), true);
-        dd($body);
+
         if (empty($body['access_token'])) {
             return $this->responseError('Authorize Failed: ' . json_encode($body, JSON_UNESCAPED_UNICODE));
         }
