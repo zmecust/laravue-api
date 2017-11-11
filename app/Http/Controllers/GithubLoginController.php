@@ -83,6 +83,7 @@ class GithubLoginController extends Controller
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
-        return redirect('https://laravue.org/#/github/login')->cookie('user', $user, 24*365);
+        \Cookie::queue('user', $user, 60*24*365);
+        return redirect('https://laravue.org/#/github/login');
     }
 }
