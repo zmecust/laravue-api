@@ -61,8 +61,8 @@ class GithubLoginController extends Controller
         $githubUser = json_decode((string) $response->getBody(), true);
 
         $user_names = User::pluck('name')->toArray();
-        if (in_array($githubUser->getNickname(), $user_names)) {
-            $user = User::where('name', $githubUser->getNickname())->first();
+        if (in_array($githubUser['login'], $user_names)) {
+            $user = User::where('name', $githubUser['login'])->first();
         } else {
             $user = User::create([
                 'name' => $githubUser['login'],
