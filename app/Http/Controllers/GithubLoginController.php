@@ -28,17 +28,14 @@ class GithubLoginController extends Controller
      */
     public function github()
     {
-        $this->client->get(self::GET_CODE, [
-            'query' => [
-                'redirect_uri' => config('services.github.redirect'),
-                'client_id' => config('services.github.client_id'),
-                'response_type' => 'code',
-                'state' => str_random(10),
-            ],
-            'headers' => [
-                'Accept' => 'application/vnd.github.v3+json',
-            ]
-        ]);
+        $codeFields = [
+            'redirect_uri' => config('services.github.redirect'),
+            'client_id' => config('services.github.client_id'),
+            'response_type' => 'code',
+            'state' => str_random(10)
+        ];
+
+        return redirect(self::GET_CODE . '?' . http_build_query($codeFields, '', '&', PHP_QUERY_RFC1738));
     }
 
     public function githubLogin()
