@@ -42,7 +42,6 @@ class GithubLoginController extends Controller
     {
         $response = $this->client->post(self::GET_ACCESS_TOKEN, [
             'form_params' => [
-                'grant_type' => 'authorization_code',
                 'client_id' => config('services.github.client_id'),
                 'client_secret' => config('services.github.client_secret'),
                 'code' => request('code'),
@@ -51,25 +50,23 @@ class GithubLoginController extends Controller
         ]);
 
         $body = json_decode((string) $response->getBody(), true);
-
+        dd($body);
         if (empty($body['access_token'])) {
             return $this->responseError('Authorize Failed: ' . json_encode($body, JSON_UNESCAPED_UNICODE));
         }
 
         $response = $this->client->get(self::GET_USER_INFO . $body['access_token']);
-
         $githubUser = json_decode((string) $response->getBody(), true);
-        dd($githubUser);
-        $user_names = User::pluck('name')->toArray();
 
+        $user_names = User::pluck('name')->toArray();
         if (in_array($githubUser->getNickname(), $user_names)) {
             $user = User::where('name', $githubUser->getNickname())->first();
         } else {
             $user = User::create([
-                'name' => $githubUser->getNickname(),
-                'avatar' => $githubUser->getAvatar(),
-                'email' => $githubUser->getEmail(),
-                'password' => $githubUser->getToken(),
+                'name' => $githubUser['login'],
+                'avatar' => $githubUser['avatar_url'],
+                'email' => $githubUser['email'],
+                'password' => str_random(40),
                 'is_confirmed' => 1,
                 'confirm_code' => str_random(60)
             ]);
