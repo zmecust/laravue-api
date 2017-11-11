@@ -61,7 +61,15 @@ class GithubLoginController extends Controller
             return $this->responseError('Authorize Failed: ' . json_encode($body, JSON_UNESCAPED_UNICODE));
         }
 
-        $response = $this->client->get(self::GET_USER_INFO . $body['access_token']);
+        return redirect('https://laravue.org/#/github/login?token=' . $body['access_token']);
+    }
+
+    /**
+     * @return $this
+     */
+    public function getUserInfo()
+    {
+        $response = $this->client->get(self::GET_USER_INFO . request('access_token'));
         $githubUser = json_decode((string) $response->getBody(), true);
 
         $user_names = User::pluck('name')->toArray();
@@ -83,7 +91,7 @@ class GithubLoginController extends Controller
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
-        $user = setcookie('user', $user, 60*24*365, '', 'https://laravue.org');
-        return redirect('https://laravue.org/#/github/login')->withCookie($user);
+
+        return $this->responseSuccess('登录成功', $user);
     }
 }
