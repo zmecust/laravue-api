@@ -16,6 +16,7 @@ Route::post('deploy', 'DeployController@deploy');
 //第三方账号回调登录
 Route::get('github','GithubLoginController@github');
 Route::get('github/login','GithubLoginController@githubLogin');
+Route::get('github/login/redirect','GithubLoginController@getUserInfo')->middleware('cors');
 
 //生成文档
 //Route::get('/swagger', function(){
