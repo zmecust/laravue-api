@@ -54,7 +54,7 @@ class GithubLoginController extends Controller
             ],
             'headers' => ['Accept' => 'application/json']
         ]);
-        dd(request('code'));
+
         $body = json_decode((string) $response->getBody(), true);
 
         if (empty($body['access_token'])) {
