@@ -28,16 +28,6 @@ class PermissionsTableSeeder extends Seeder
             1 =>
                 array (
                     'id' => 2,
-                    'name' => 'users.menu',
-                    'display_name' => '用户菜单',
-                    'description' => '用户菜单',
-                    'uri' => 'request',
-                    'created_at' => '2017-04-26 12:00:00',
-                    'updated_at' => '2017-04-26 12:00:00',
-                ),
-            2 =>
-                array (
-                    'id' => 3,
                     'name' => 'menus.index',
                     'display_name' => '菜单列表',
                     'description' => '菜单列表',
@@ -45,9 +35,9 @@ class PermissionsTableSeeder extends Seeder
                     'created_at' => '2017-04-26 12:00:00',
                     'updated_at' => '2017-04-26 12:00:00',
                 ),
-            3 =>
+            2 =>
                 array (
-                    'id' => 4,
+                    'id' => 3,
                     'name' => 'permissions.index',
                     'display_name' => '权限列表',
                     'description' => '权限列表',
@@ -55,9 +45,9 @@ class PermissionsTableSeeder extends Seeder
                     'created_at' => '2017-05-02 21:56:19',
                     'updated_at' => '2017-05-02 21:56:22',
                 ),
-            4 =>
+            3 =>
                 array (
-                    'id' => 5,
+                    'id' => 4,
                     'name' => 'roles.index',
                     'display_name' => '角色列表',
                     'description' => '角色列表',
@@ -65,9 +55,9 @@ class PermissionsTableSeeder extends Seeder
                     'created_at' => '2017-05-02 21:56:33',
                     'updated_at' => '2017-05-02 21:56:29',
                 ),
-            5 =>
+            4 =>
                 array (
-                    'id' => 6,
+                    'id' => 5,
                     'name' => 'users.index',
                     'display_name' => '用户列表',
                     'description' => '用户列表',
@@ -75,9 +65,9 @@ class PermissionsTableSeeder extends Seeder
                     'created_at' => '2017-05-03 04:08:06',
                     'updated_at' => '2017-05-03 04:08:06',
                 ),
-            6 =>
+            5 =>
                 array (
-                    'id' => 7,
+                    'id' => 6,
                     'name' => 'parent.content',
                     'display_name' => '内容管理',
                     'description' => '内容管理',
@@ -85,9 +75,9 @@ class PermissionsTableSeeder extends Seeder
                     'created_at' => '2017-05-03 04:08:06',
                     'updated_at' => '2017-05-03 04:08:06',
                 ),
-            7 =>
+            6 =>
                 array (
-                    'id' => 8,
+                    'id' => 7,
                     'name' => 'articles.index',
                     'display_name' => '文章列表',
                     'description' => '文章列表',

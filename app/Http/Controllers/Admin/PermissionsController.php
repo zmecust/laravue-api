@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Validator;
+use Auth;
 use App\Repositories\PermissionRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -40,6 +41,13 @@ class PermissionsController extends Controller
     {
         $group_permissions = $this->permissionRepository->groupPermissions();
         return $this->responseSuccess('OK', $group_permissions);
+    }
+
+    public function buttonPermissions()
+    {
+        $permissions = Auth::user()->roles()->first()
+            ->perms()->pluck('name')->toArray(); //获取当前用户所有权限名
+        return $this->responseSuccess('OK', $permissions);
     }
 
     /**

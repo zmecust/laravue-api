@@ -75,8 +75,9 @@ Route::group([
     'namespace' => 'Admin',
     'prefix' => 'v1/admin',
 ], function() {
-    Route::get('menu', 'MenusController@getSidebarTree')->name('users.menu'); //获取后台左侧菜单
+    Route::get('menu', 'MenusController@getSidebarTree'); //获取后台左侧菜单
     Route::get('group_permissions', 'PermissionsController@groupPermissions'); //获取权限组
+    Route::get('button_permissions', 'PermissionsController@buttonPermissions'); //获取按钮级权限
     Route::resource('roles', 'RolesController');
     Route::resource('users', 'UsersController');
     Route::resource('menus', 'MenusController');
