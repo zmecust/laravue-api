@@ -47,6 +47,9 @@ class PermissionsController extends Controller
     {
         $permissions = Auth::user()->roles()->first()
             ->perms()->pluck('name')->toArray(); //获取当前用户所有权限名
+        $permissions = collect($permissions)->flatMap(function ($permission) {
+            return [$permission => true];
+        });
         return $this->responseSuccess('OK', $permissions);
     }
 
