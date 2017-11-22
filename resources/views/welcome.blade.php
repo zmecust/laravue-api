@@ -39,6 +39,7 @@
                 position: absolute;
                 right: 10px;
                 top: 18px;
+                border-radius: ;
             }
 
             .content {

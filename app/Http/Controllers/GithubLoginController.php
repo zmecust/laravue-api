@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 
 class GithubLoginController extends Controller
@@ -28,61 +30,68 @@ class GithubLoginController extends Controller
      */
     public function github()
     {
-        $this->client->get(self::GET_CODE, [
-            'query' => [
-                'redirect_uri' => config('services.github.redirect'),
-                'client_id' => config('services.github.client_id'),
-                'response_type' => 'code',
-                'state' => str_random(10),
-            ],
-            'headers' => [
-                'Accept' => 'application/vnd.github.v3+json',
-            ]
-        ]);
+        $codeFields = [
+            'redirect_uri' => config('services.github.redirect'),
+            'client_id' => config('services.github.client_id'),
+            'response_type' => 'code',
+            'state' => str_random(10)
+        ];
+
+        return redirect(self::GET_CODE . '?' . http_build_query($codeFields, '', '&', PHP_QUERY_RFC1738));
     }
 
+    /**
+     * @return $this|\Illuminate\Http\JsonResponse
+     */
     public function githubLogin()
     {
         $response = $this->client->post(self::GET_ACCESS_TOKEN, [
             'form_params' => [
-                'grant_type' => 'authorization_code',
                 'client_id' => config('services.github.client_id'),
                 'client_secret' => config('services.github.client_secret'),
                 'code' => request('code'),
                 'redirect_uri' => config('services.github.redirect')
             ],
+            'headers' => ['Accept' => 'application/json']
         ]);
 
-        $access_token = json_decode((string) $response->getBody(), true)['access_token'];
+        $body = json_decode((string) $response->getBody(), true);
 
-        $response = $this->client->get(self::GET_USER_INFO . $access_token, [
-            'headers' => [
-                'Accept' => 'application/vnd.github.v3+json',
-            ],
-        ]);
+        if (empty($body['access_token'])) {
+            return $this->responseError('Authorize Failed: ' . json_encode($body, JSON_UNESCAPED_UNICODE));
+        }
 
+        return redirect('https://laravue.org/#/github/login?access_token=' . $body['access_token']);
+    }
+
+    /**
+     * @return $this
+     */
+    public function getUserInfo()
+    {
+        $response = $this->client->get(self::GET_USER_INFO . request('access_token'));
         $githubUser = json_decode((string) $response->getBody(), true);
-        dd($githubUser);
-        $user_names = User::pluck('name')->toArray();
 
-        if (in_array($githubUser->getNickname(), $user_names)) {
-            $user = User::where('name', $githubUser->getNickname())->first();
+        $user_names = User::pluck('name')->toArray();
+        if (in_array($githubUser['login'], $user_names)) {
+            $user = User::where('name', $githubUser['login'])->first();
         } else {
             $user = User::create([
-                'name' => $githubUser->getNickname(),
-                'avatar' => $githubUser->getAvatar(),
-                'email' => $githubUser->getEmail(),
-                'password' => $githubUser->getToken(),
+                'name' => $githubUser['login'],
+                'avatar' => $githubUser['avatar_url'],
+                'email' => $githubUser['email'],
+                'password' => str_random(40),
                 'is_confirmed' => 1,
                 'confirm_code' => str_random(60)
             ]);
             $user->attachRole(3);
         }
-        $token = JWTAuth::fromUser($user);
+        $token = \JWTAuth::fromUser($user);
         $user->jwt_token = [
             'access_token' => $token,
             'expires_in' => Carbon::now()->addMinutes(config('jwt.ttl'))->timestamp
         ];
-        return redirect('https://laravue.org/#/github/login')->cookie('user', $user, 24*365);
+
+        return $this->responseSuccess('登录成功', $user->toArray());
     }
 }
