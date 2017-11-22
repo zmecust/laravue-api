@@ -34,6 +34,7 @@ class PermissionsController extends Controller
     }
 
     /**
+     * 供创建角色时使用
      * @return \Illuminate\Http\JsonResponse
      */
     public function groupPermissions()
