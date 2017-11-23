@@ -36,6 +36,7 @@ Route::group([
     Route::get('categories', 'CategoriesController@index'); //获取文章的分类
     Route::get('articles/{article}/like', 'ArticlesController@like'); //获取文章的所有点赞
     Route::get('search', 'ArticlesController@search');
+    Route::post('markdown/upload', 'ArticlesController@markdownUpload'); //上传文章图片(供后台使用)
 
     //用户相关
     Route::resource('users', 'UsersController');

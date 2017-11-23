@@ -213,7 +213,7 @@ class ArticlesController extends Controller
         $file = $request->file('file');
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
-        $article_image = env('APP_URL') . '/storage/articleImage/'.$filename;
+        $article_image = env('APP_URL') . '/storage/articleImage/' . $filename;
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 
@@ -229,7 +229,7 @@ class ArticlesController extends Controller
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
         Image::configure(array('driver' => 'imagick'));
         Image::make(public_path('../storage/app/public/articleImage/' . $filename))->fit(300, 200)->save();
-        $article_image = env('APP_URL') . '/storage/articleImage/'.$filename;
+        $article_image = env('APP_URL') . '/storage/articleImage/' . $filename;
         return $this->responseSuccess('查询成功', ['url' => $article_image]);
     }
 
@@ -253,5 +253,14 @@ class ArticlesController extends Controller
     {
         $articles = Article::search(request('q'), null, true)->with('user')->paginate(30);
         return $this->responseSuccess('查询成功', $articles);
+    }
+
+    public function markdownUpload()
+    {
+        $file = $request->file('editormd-image-file');
+        $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('../storage/app/public/articleImage'), $filename);
+        $article_image = env('APP_URL') . '/storage/articleImage/' . $filename;
+        return response()->json(['success' => 1, 'message' => 'success', 'url' => $article_image]);
     }
 }
