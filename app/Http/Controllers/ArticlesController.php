@@ -255,7 +255,7 @@ class ArticlesController extends Controller
         return $this->responseSuccess('查询成功', $articles);
     }
 
-    public function markdownUpload()
+    public function markdownUpload(Request $request)
     {
         $file = $request->file('editormd-image-file');
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
