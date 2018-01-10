@@ -8,6 +8,7 @@ use App\Transformer\CommentTransformer;
 use App\User;
 use Cache;
 use Auth;
+use Image;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -138,6 +139,8 @@ class UsersController extends Controller
         $file = $request->file('file');
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('image'), $filename);
+        Image::configure(array('driver' => 'imagick'));
+        Image::make(public_path('image/' . $filename))->fit(300, 300)->save();
         $avatar_image = env('APP_URL') . '/image/' . $filename;
         $user = Auth::user();
         $user->avatar = $avatar_image;
