@@ -44,7 +44,7 @@ class FollowsController extends Controller
         if ( count($followed['attached']) > 0 ) {
             $user->increment('followings_count');
             $userToFollow->increment('followers_count');
-            $userToFollow->notify(new FollowUserNotification(['name' => $user->name, 'user_id' => $userToFollow->id]));
+            $userToFollow->notify(new FollowUserNotification(['name' => $user->name, 'user_id' => $user->id]));
             return $this->responseSuccess('OK', ['followed' => true]);
         }
         $user->decrement('followings_count');
