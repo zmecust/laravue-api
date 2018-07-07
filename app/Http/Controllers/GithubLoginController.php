@@ -61,7 +61,7 @@ class GithubLoginController extends Controller
             return $this->responseError('Authorize Failed: ' . json_encode($body, JSON_UNESCAPED_UNICODE));
         }
 
-        return redirect('https://laravue.org/#/github/login?access_token=' . $body['access_token']);
+        return redirect(env('FRONTEND_URL') . '/#/github/login?access_token=' . $body['access_token']);
     }
 
     /**

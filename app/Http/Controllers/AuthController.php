@@ -67,7 +67,7 @@ class AuthController extends Controller
      */
     private function sendVerifyEmailTo($user)
     {
-        $data = [ 'url' => 'https://laravue.org/#/verify_email/' . $user->confirm_code,
+        $data = [ 'url' => env('FRONTEND_URL') . '/#/verify_email/' . $user->confirm_code,
                   'name' => $user->name ];
         $template = new SendCloudTemplate('laravue_verify', $data);
 
