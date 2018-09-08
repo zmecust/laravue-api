@@ -1,2 +1,2 @@
-* * * * * php /var/www/html/laravue-backend/artisan schedule:run >> /dev/null 2>&1
+* * * * * php /var/www/html/laravue-api/artisan schedule:run >> /dev/null 2>&1
 
