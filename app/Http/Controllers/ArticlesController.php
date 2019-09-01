@@ -242,6 +242,6 @@ class ArticlesController extends Controller
         $filename = md5(time()) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('../storage/app/public/articleImage'), $filename);
         $article_image = env('APP_URL') . '/storage/articleImage/' . $filename;
-        return response()->json(['success' => 1, 'message' => 'success', 'url' => $article_image]);
+        return redirect($request->get('callback') . '?success=1&message=success&url=' . $article_image . '&dialog_id='. $request->get('dialog_id'));
     }
 }
